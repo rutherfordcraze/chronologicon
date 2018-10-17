@@ -1,0 +1,1 @@
+CHRON_PREFS = {'save_directory': '/Users/rutherfordcraze/Documents/Git/chron/logs'}

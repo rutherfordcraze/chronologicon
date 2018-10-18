@@ -1,1 +1,0 @@
-CUR_LOG = {'TIME_START': 1539788056.593134, 'TIME_LENGTH': 0, 'TIME_END': 0, 'NOTE': 'note', 'DISC': 'disc', 'PROJ': 'proj'}

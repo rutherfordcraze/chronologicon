@@ -7,13 +7,17 @@
 
 # Tracks time
 
-import argparse, json, time
+import argparse, json, time, os, sys
+
+PREFS_DEFAULTS = '{"save_directory": "~/Documents/Chron/"}'
+LOGS_DEFAULTS = '[]'
 
 PREFS_FILENAME = 'preferences.json'
 PRESAVE_FILENAME = 'presave.json'
 LOGS_FILENAME = 'logs.json'
 STATS_FILENAME = 'stat.json'
 
+PREFS = {}
 CUR_LOG = {
 	'TIME_START':0,
 	'TIME_END':0,
@@ -24,20 +28,50 @@ CUR_LOG = {
 	'NOTE':""
 }
 
-# Load preferences from preferences.json
-PREFS = {}
-with open(PREFS_FILENAME) as PREFS_FILE:
-	PREFS = json.load(PREFS_FILE)
-
 
 
 # --------------------------------------------------
 
 
+# Check whether a chron file exists and is accessible
+def CheckFile(file):
+	if file == 'logs':
+		try:
+			with open(PREFS['save_directory'] + LOGS_FILENAME, 'r') as LOGS_FILE:
+				return True
+		except:
+			return False
+
+	if file == 'preferences':
+		try:
+			with open(PREFS_FILENAME, 'r') as PREFS_FILE:
+				return True
+		except:
+			return False
+
+	if file == 'presave':
+		try:
+			with open(PRESAVE_FILENAME, 'r') as PRESAVE_FILE:
+				if(len(PRESAVE_FILE.read()) > 10):
+					return True
+		except:
+			return False
+
+	return False # if no file set or no True conditions met
+
+# Create a chron file with its default parameters
+def InitFile(file):
+	if file == 'logs':
+		with open(PREFS['save_directory'] + LOGS_FILENAME, 'w') as LOGS_FILE:
+			LOGS_FILE.write(LOGS_DEFAULTS)
+
+	if file == 'preferences':
+		with open(PREFS_FILENAME, 'w') as PREFS_FILE:
+			PREFS_FILE.write(PREFS_DEFAULTS)
 
 # Overwrites preferences.json with current settings
 def WritePrefs():
-	with open(PREFS_FILENAME, 'w') as PREFS_FILE:
+	with open(PREFS_FILENAME, 'w+') as PREFS_FILE:
 		PREFS_FILE.write(json.dumps(PREFS))
 
 # Load current log state from presave.json
@@ -48,7 +82,7 @@ def PreLoad():
 
 # Update current log state in presave.json
 def PreSave():
-	with open(PRESAVE_FILENAME, 'w') as PRESAVE_FILE:
+	with open(PRESAVE_FILENAME, 'w+') as PRESAVE_FILE:
 		PRESAVE_FILE.write(json.dumps(CUR_LOG))
 
 # Clear presave.json to prevent duplicate log completions
@@ -58,15 +92,35 @@ def ClearPresave():
 
 # Write new log to the main file
 def Save():
-	with open(LOGS_FILENAME, 'a') as LOGS_FILE:
-		LOGS_FILE.write('\n' + json.dumps(CUR_LOG))
+	with open(PREFS['save_directory'] + LOGS_FILENAME, 'r+') as LOGS_FILE:
+		LOGS_FILE.seek(-1, os.SEEK_END)
+		LOGS_FILE.truncate()
+		LOGS_FILE.write(',\n' + json.dumps(CUR_LOG) + ']')
 
 
 
 # --------------------------------------------------
 
 
+# Create preferences file if it doesn't exist
+if CheckFile('preferences') == False:
+	print("No preferences found. Setting defaults.")
+	InitFile('preferences')
 
+# Load preferences from file
+with open(PREFS_FILENAME) as PREFS_FILE:
+	PREFS = json.load(PREFS_FILE)
+
+# Create logs file if it doesn't exist
+if CheckFile('logs') == False:
+	print("No logs file found. Setting defaults.")
+	InitFile('logs')
+
+
+# --------------------------------------------------
+
+
+# Set up argparse to get the arguments passed to Chron
 parser = argparse.ArgumentParser(description="A minimal time tracker.", prog="chron")
 parser.add_argument("-s", "--start", nargs="*", help="Start a new log.")
 parser.add_argument("-x", "--stop", action="store_true", help="Complete the current log.")
@@ -74,11 +128,15 @@ parser.add_argument("-d", "--directory", nargs=1, help="Change the current save 
 parser.add_argument("-b", "--backup", action="store_true", help="Back up the log file.")
 args = parser.parse_args()
 
+# Back up log file
 if args.backup:
-	with open(PREFS['save_directory'] + LOGS_FILENAME) as LOGS_FILE:
-		with open(PREFS['save_directory'] + 'chron_backup-' + time.strftime("%y%m%d_%H%M", time.localtime()) + '.json', 'w') as BACKUP_FILE:
-			BACKUP_FILE.write(LOGS_FILE.read())
-	print("Log file backed up.")
+	if CheckFile('logs'):
+		with open(PREFS['save_directory'] + LOGS_FILENAME) as LOGS_FILE:
+			with open(PREFS['save_directory'] + 'chron_backup-' + time.strftime("%y%m%d_%H%M", time.localtime()) + '.json', 'w') as BACKUP_FILE:
+				BACKUP_FILE.write(LOGS_FILE.read())
+		print("Log file backed up.")
+	else:
+		print("Couldn't find a log file to back up.")
 
 # Change save directory.
 if args.directory:
@@ -94,18 +152,21 @@ if args.directory:
 
 # Complete and store the current log.
 if args.stop:
-	PreLoad() # Get the current log state
-	CUR_LOG['TIME_END'] = int(time.time() * 1000)
-	CUR_LOG['TIME_LENGTH'] = CUR_LOG['TIME_END'] - CUR_LOG['TIME_START']
-	seconds = str(CUR_LOG['TIME_LENGTH'] // 1000)
+	if CheckFile('presave'):
+		PreLoad() # Get the current log state
+		CUR_LOG['TIME_END'] = int(time.time() * 1000)
+		CUR_LOG['TIME_LENGTH'] = CUR_LOG['TIME_END'] - CUR_LOG['TIME_START']
+		seconds = str(CUR_LOG['TIME_LENGTH'] // 1000)
 
-	Save()
-	ClearPresave()
-	
-	if seconds == '1':
-		print("Log complete. Tracked " + seconds + " second.")
+		Save()
+		ClearPresave()
+
+		if seconds == '1':
+			print("Log complete. Tracked " + seconds + " second.")
+		else:
+			print("Log complete. Tracked " + seconds + " seconds.")
 	else:
-		print("Log complete. Tracked " + seconds + " seconds.")
+		print("No log in progress.")
 
 # Start a new log and presave in case of crash.
 if args.start:

@@ -7,13 +7,12 @@
 
 # Tracks time
 
-import argparse
-from time import time
-import chron_preferences
+import argparse, json, time
 
-M_PREFS = chron_preferences.CHRON_PREFS
-# with open('chron_preferences.py', 'r') as PREFS_FILE:
-# 	M_PREFS = PREFS_FILE
+PREFS_FILENAME = 'preferences.json'
+PRESAVE_FILENAME = 'presave.json'
+LOGS_FILENAME = 'logs.json'
+STATS_FILENAME = 'stat.json'
 
 CUR_LOG = {
 	'TIME_START':0,
@@ -25,44 +24,98 @@ CUR_LOG = {
 	'NOTE':""
 }
 
+# Load preferences from preferences.json
+PREFS = {}
+with open(PREFS_FILENAME) as PREFS_FILE:
+	PREFS = json.load(PREFS_FILE)
+
+
+
+# --------------------------------------------------
+
+
+
+# Overwrites preferences.json with current settings
 def WritePrefs():
-	with open('chron_preferences.py', 'w') as PREFS_FILE:
-		PREFS_FILE.write("CHRON_PREFS = " + repr(M_PREFS))
+	with open(PREFS_FILENAME, 'w') as PREFS_FILE:
+		PREFS_FILE.write(json.dumps(PREFS))
 
+# Load current log state from presave.json
+def PreLoad():
+	global CUR_LOG
+	with open(PRESAVE_FILENAME) as PRESAVE_FILE:
+		CUR_LOG = json.load(PRESAVE_FILE)
+
+# Update current log state in presave.json
 def PreSave():
-	with open('chron_presave.py', 'w') as PRESAVE_FILE:
-		PRESAVE_FILE.write("CUR_LOG = " + repr(CUR_LOG))
+	with open(PRESAVE_FILENAME, 'w') as PRESAVE_FILE:
+		PRESAVE_FILE.write(json.dumps(CUR_LOG))
 
-# Commands:
-# start (-s): Starts a new log
-# stop (-x): Ends and commits the current log
-# directory (-d): Sets/resets chron's save directory
+# Clear presave.json to prevent duplicate log completions
+def ClearPresave():
+	with open(PRESAVE_FILENAME, 'w') as PRESAVE_FILE:
+		PRESAVE_FILE.write("")
+
+# Write new log to the main file
+def Save():
+	with open(LOGS_FILENAME, 'a') as LOGS_FILE:
+		LOGS_FILE.write('\n' + json.dumps(CUR_LOG))
+
+
+
+# --------------------------------------------------
+
+
 
 parser = argparse.ArgumentParser(description="A minimal time tracker.", prog="chron")
 parser.add_argument("-s", "--start", nargs="*", help="Start a new log.")
 parser.add_argument("-x", "--stop", action="store_true", help="Complete the current log.")
 parser.add_argument("-d", "--directory", nargs=1, help="Change the current save directory.")
-
+parser.add_argument("-b", "--backup", action="store_true", help="Back up the log file.")
 args = parser.parse_args()
+
+if args.backup:
+	with open(PREFS['save_directory'] + LOGS_FILENAME) as LOGS_FILE:
+		with open(PREFS['save_directory'] + 'chron_backup-' + time.strftime("%y%m%d_%H%M", time.localtime()) + '.json', 'w') as BACKUP_FILE:
+			BACKUP_FILE.write(LOGS_FILE.read())
+	print("Log file backed up.")
 
 # Change save directory.
 if args.directory:
-	M_PREFS['save_directory'] = args.directory[0]
+	directory = args.directory[0]
+
+	# If it's missing, add / to the filepath to avoid conflicts when writing or backing up
+	if(directory[-1:] != '/'):
+		directory = directory + '/'
+
+	PREFS['save_directory'] = directory
 	WritePrefs()
-	print("Updated preferences.")
+	print("Directory updated.")
 
 # Complete and store the current log.
 if args.stop:
-	print("Stopping log.")
+	PreLoad() # Get the current log state
+	CUR_LOG['TIME_END'] = int(time.time() * 1000)
+	CUR_LOG['TIME_LENGTH'] = CUR_LOG['TIME_END'] - CUR_LOG['TIME_START']
+	seconds = str(CUR_LOG['TIME_LENGTH'] // 1000)
+
+	Save()
+	ClearPresave()
+	
+	if seconds == '1':
+		print("Log complete. Tracked " + seconds + " second.")
+	else:
+		print("Log complete. Tracked " + seconds + " seconds.")
 
 # Start a new log and presave in case of crash.
 if args.start:
 	if(len(args.start) < 2):
-		print("Not enough arguments.")
+		print("Not enough arguments.") # TODO: Create step-by-step entry
 	else:
-		CUR_LOG['TIME_START'] = time()
+		CUR_LOG['TIME_START'] = int(time.time() * 1000)
 		CUR_LOG['DISC'] = args.start[0]
 		CUR_LOG['PROJ'] = args.start[1]
 		if len(args.start) == 3:
 			CUR_LOG['NOTE'] = args.start[2]
 		PreSave()
+		print("Starting new log with discipline '" + CUR_LOG['DISC'] + "' and project '" + CUR_LOG['PROJ'] + "'.")

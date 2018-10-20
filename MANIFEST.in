@@ -1,2 +1,4 @@
-include chronologicon/preferences.json
-include chronologicon/presave.json
+include data/
+include data/logs.json
+include data/stat.json
+include data/presave.json

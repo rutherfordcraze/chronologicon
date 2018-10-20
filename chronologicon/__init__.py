@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-# Chronologicon v4.0
-# "The Command Line One"
+# Chronologicon v4.14
 # Rutherford Craze
 # https://craze.co.uk
 # 181020
@@ -44,7 +43,7 @@ def Preflights():
 		with open(LOGS_FILENAME, 'r') as LOGS_FILE:
 			return True
 	except:
-		print("Logs file not found. Creating...")
+		print("Creating logs file...")
 		os.makedirs(os.path.dirname(LOGS_FILENAME), exist_ok=True)
 		try:
 			with open(LOGS_FILENAME, "w") as LOGS_FILE:
@@ -54,6 +53,21 @@ def Preflights():
 			print("Unable to create log file. Please check your install.")
 			return False
 
+	# Check if presave file exists; create it if it doesn't
+	try:
+		with open(PRESAVE_FILENAME, 'r') as PRESAVE_FILE:
+			return True
+	except:
+		print("Creating temporary save file...")
+		os.makedirs(os.path.dirname(PRESAVE_FILENAME), exist_ok=True)
+		try:
+			with open(PRESAVE_FILENAME, "w") as PRESAVE_FILE:
+				PRESAVE_FILE.write("")
+			return True
+		except:
+			print("Unable to create temporary save file. Please check your install.")
+			return False
+
 
 
 # Start a new log and save its initial parameters to the presave file
@@ -61,10 +75,13 @@ def StartLog(args):
 	if len(args) < 2:
 		print("Not enough information to start a new log.\nUsage: '$ chron -s <discipline> <project> <optional_note>'")
 	else:
-		# Abort if there's already a log running
-		if(os.path.getsize(PRESAVE_FILENAME) > 10):
-			print("Log already in progress.")
-			return
+		try:
+			# Abort if there's already a log running
+			if(os.path.getsize(PRESAVE_FILENAME) > 10):
+				print("Log already in progress.")
+				return
+		except:
+			print("Error checking extant temp file. Continuing anyway.")
 
 		CUR_LOG['TIME_START'] = int(time.time() * 1000)
 		CUR_LOG['DISC'] = args[0]
@@ -174,3 +191,20 @@ def Backup():
 		print("Log file backed up.")
 	except:
 		print("Unable to back up logs.")
+
+def Export(location):
+	try:
+		with open(LOGS_FILENAME) as LOGS_FILE:
+			with open(os.path.join(location, 'chron-data-' + time.strftime("%y%m%d_%H%M", time.localtime()) + '.json'), 'w') as EXPORT_FILE:
+				EXPORT_FILE.write(LOGS_FILE.read())
+		print("Data file exported.")
+	except:
+		print("Unable to export data.")
+
+	try:
+		with open(STATS_FILENAME) as STATS_FILE:
+			with open(os.path.join(location, 'chron-stat-' + time.strftime("%y%m%d_%H%M", time.localtime()) + '.json'), 'w') as EXPORT_FILE:
+				EXPORT_FILE.write(STATS_FILE.read())
+		print("Stats file exported.")
+	except:
+		print("Unable to export stats.")

@@ -9,6 +9,7 @@ parser.add_argument("-s", "--start", nargs="*", help="Start a new log.")
 parser.add_argument("-x", "--stop", action="store_true", help="Complete the current log.")
 parser.add_argument("--cancel", action="store_true", help="Cancel the current log.")
 parser.add_argument("-b", "--backup", action="store_true", help="Back up the log file.")
+parser.add_argument("-e", "--export", nargs=1, help="Export files to a specified directory.")
 args = parser.parse_args()
 
 if args.stop:
@@ -22,3 +23,6 @@ if args.cancel:
 
 if args.backup:
 	chronologicon.Backup()
+
+if args.export:
+	chronologicon.Export(args.export[0])

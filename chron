@@ -9,7 +9,7 @@
 
 import argparse, json, time, os, sys
 
-PREFS_DEFAULTS = '{"save_directory": "~/Documents/Chron/"}'
+PREFS_DEFAULTS = '{"save_directory": "~/Documents/"}'
 LOGS_DEFAULTS = '[]'
 
 PREFS_FILENAME = 'preferences.json'
@@ -189,7 +189,6 @@ def StopLog():
 
 		if args.nostats != True:
 			SaveStats()
-			print("Updating statistics.")
 	else:
 		print("No log in progress.")
 

@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+
+import chronologicon, argparse
+chronologicon.Preflights()
+
+# Set up argparse to get the arguments passed to Chron
+parser = argparse.ArgumentParser(description="A minimal time tracker.", prog="chron")
+parser.add_argument("-s", "--start", nargs="*", help="Start a new log.")
+parser.add_argument("-x", "--stop", action="store_true", help="Complete the current log.")
+parser.add_argument("--cancel", action="store_true", help="Cancel the current log.")
+parser.add_argument("-b", "--backup", action="store_true", help="Back up the log file.")
+args = parser.parse_args()
+
+if args.stop:
+	chronologicon.StopLog()
+
+if args.start is not None:
+	chronologicon.StartLog(args.start)
+
+if args.cancel:
+	chronologicon.CancelLog()
+
+if args.backup:
+	chronologicon.Backup()

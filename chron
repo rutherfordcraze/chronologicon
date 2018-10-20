@@ -5,7 +5,7 @@
 # https://craze.co.uk
 # 181017
 
-# Tracks time
+# A minimal command-line time tracker.
 
 import argparse, json, time, os, sys
 
@@ -18,6 +18,9 @@ LOGS_FILENAME = 'logs.json'
 STATS_FILENAME = 'stat.json'
 
 PREFS = {}
+
+# s = Start time; e = End time; l = Length of log
+# d = Discipline; p = Project; n = Note
 CUR_LOG = {
 	'TIME_START':0,
 	'TIME_END':0,
@@ -25,13 +28,22 @@ CUR_LOG = {
 
 	'DISC':"",
 	'PROJ':"",
-	'NOTE':""
-}
+	'XNOTE':""
+	}
+
+CUR_STATS = {
+	'discByTime':{},
+	'projByTime':{},
+	'projByDisc':{},
+	'workByHour':{},
+	'avgLogLength':0,
+	'totalLogs':0,
+	'totalTime':0
+	}
 
 
 
-# --------------------------------------------------
-
+# --REFERENCE-FUNCTIONS-----------------------------
 
 # Check whether a chron file exists and is accessible
 def CheckFile(file):
@@ -95,12 +107,108 @@ def Save():
 	with open(PREFS['save_directory'] + LOGS_FILENAME, 'r+') as LOGS_FILE:
 		LOGS_FILE.seek(-1, os.SEEK_END)
 		LOGS_FILE.truncate()
-		LOGS_FILE.write(',\n' + json.dumps(CUR_LOG) + ']')
+		if(os.path.getsize(PREFS['save_directory'] + LOGS_FILENAME) > 10):
+			LOGS_FILE.write(',')
+		LOGS_FILE.write('\n' + json.dumps(CUR_LOG) + ']')
+
+# Create/ overwrite stats file with info from all logs
+def SaveStats():
+	# Read/ generate stats from logs file
+	with open(PREFS['save_directory'] + LOGS_FILENAME) as LOGS_FILE:
+		LOGS = json.load(LOGS_FILE)
+		for log in range(len(LOGS)):
+			thisLog = LOGS[log]
+
+			# Total logs
+			CUR_STATS['totalLogs'] = len(LOGS)
+
+			# Total ms tracked
+			CUR_STATS['totalTime'] += thisLog['TIME_LENGTH']
+
+			# Average log duration
+			CUR_STATS['avgLogLength'] = CUR_STATS['totalTime'] // CUR_STATS['totalLogs']
+
+			# Disciplines by time
+			CUR_STATS['discByTime'][thisLog['DISC']] = CUR_STATS['discByTime'].get(thisLog['DISC'], 0) + thisLog['TIME_LENGTH']
+
+			# Projects by time
+			CUR_STATS['projByTime'][thisLog['PROJ']] = CUR_STATS['projByTime'].get(thisLog['PROJ'], 0) + thisLog['TIME_LENGTH']
+
+			# Projects-by-discipline breakdown assignment
+			CUR_STATS['projByDisc'][thisLog['PROJ']] = CUR_STATS['projByDisc'].get(thisLog['PROJ'], dict())
+			CUR_STATS['projByDisc'][thisLog['PROJ']][thisLog['DISC']] = CUR_STATS['projByDisc'][thisLog['PROJ']].get(thisLog['DISC'], 0) + thisLog['TIME_LENGTH']
+
+			# Productivity by hour
+			logHour = time.strftime("%H", time.localtime(thisLog['TIME_START']/1000))
+			CUR_STATS['workByHour'][logHour] = CUR_STATS['workByHour'].get(logHour, 0) + 1
+
+	# Write statistics to stats file
+	with open(PREFS['save_directory'] + STATS_FILENAME, 'w') as STATS_FILE:
+		STATS_FILE.write('[' + json.dumps(CUR_STATS) + ']')
+
+
+# --CORE-FUNCTIONS----------------------------------
+
+# Duplicate the log file and give it a helpful name
+def Backup():
+	if CheckFile('logs'):
+		with open(PREFS['save_directory'] + LOGS_FILENAME) as LOGS_FILE:
+			with open(PREFS['save_directory'] + 'chron_backup-' + time.strftime("%y%m%d_%H%M", time.localtime()) + '.json', 'w') as BACKUP_FILE:
+				BACKUP_FILE.write(LOGS_FILE.read())
+		print("Log file backed up.")
+	else:
+		print("Couldn't find a log file to back up.")
+
+# Change the directory in which logs are stored
+def ChangeDirectory():
+	directory = args.directory[0]
+
+	# If it's missing, add / to the filepath to avoid conflicts when writing or backing up
+	if(directory[-1:] != '/'):
+		directory = directory + '/'
+
+	PREFS['save_directory'] = directory
+	WritePrefs()
+	print("Directory updated.")
+
+# Stop the current log and save it to the log file
+def StopLog():
+	if CheckFile('presave'):
+		PreLoad() # Get the current log state
+		CUR_LOG['TIME_END'] = int(time.time() * 1000)
+		CUR_LOG['TIME_LENGTH'] = CUR_LOG['TIME_END'] - CUR_LOG['TIME_START']
+		seconds = str(CUR_LOG['TIME_LENGTH'] // 1000)
+
+		Save()
+		ClearPresave()
+
+		if seconds == '1':
+			print("Log complete. Tracked " + seconds + " second.")
+		else:
+			print("Log complete. Tracked " + seconds + " seconds.")
+
+		if args.nostats != True:
+			SaveStats()
+			print("Updating statistics.")
+	else:
+		print("No log in progress.")
+
+# Start a new log and save its parameters to the temp file
+def StartLog():
+	if(len(args.start) < 2):
+		print("Not enough arguments.") # TODO: Create step-by-step entry
+	else:
+		CUR_LOG['TIME_START'] = int(time.time() * 1000)
+		CUR_LOG['DISC'] = args.start[0]
+		CUR_LOG['PROJ'] = args.start[1]
+		if len(args.start) == 3:
+			CUR_LOG['XNOTE'] = args.start[2]
+		PreSave()
+		print("Starting new log with discipline '" + CUR_LOG['DISC'] + "' and project '" + CUR_LOG['PROJ'] + "'.")
 
 
 
-# --------------------------------------------------
-
+# --STARTUP-CHECKS----------------------------------
 
 # Create preferences file if it doesn't exist
 if CheckFile('preferences') == False:
@@ -117,8 +225,8 @@ if CheckFile('logs') == False:
 	InitFile('logs')
 
 
-# --------------------------------------------------
 
+# --ARGUMENT-PARSING--------------------------------
 
 # Set up argparse to get the arguments passed to Chron
 parser = argparse.ArgumentParser(description="A minimal time tracker.", prog="chron")
@@ -126,57 +234,21 @@ parser.add_argument("-s", "--start", nargs="*", help="Start a new log.")
 parser.add_argument("-x", "--stop", action="store_true", help="Complete the current log.")
 parser.add_argument("-d", "--directory", nargs=1, help="Change the current save directory.")
 parser.add_argument("-b", "--backup", action="store_true", help="Back up the log file.")
+parser.add_argument("--nostats", action="store_true", help="Don't update statistics file.")
 args = parser.parse_args()
 
 # Back up log file
 if args.backup:
-	if CheckFile('logs'):
-		with open(PREFS['save_directory'] + LOGS_FILENAME) as LOGS_FILE:
-			with open(PREFS['save_directory'] + 'chron_backup-' + time.strftime("%y%m%d_%H%M", time.localtime()) + '.json', 'w') as BACKUP_FILE:
-				BACKUP_FILE.write(LOGS_FILE.read())
-		print("Log file backed up.")
-	else:
-		print("Couldn't find a log file to back up.")
+	Backup()
 
 # Change save directory.
 if args.directory:
-	directory = args.directory[0]
-
-	# If it's missing, add / to the filepath to avoid conflicts when writing or backing up
-	if(directory[-1:] != '/'):
-		directory = directory + '/'
-
-	PREFS['save_directory'] = directory
-	WritePrefs()
-	print("Directory updated.")
+	ChangeDirectory()
 
 # Complete and store the current log.
 if args.stop:
-	if CheckFile('presave'):
-		PreLoad() # Get the current log state
-		CUR_LOG['TIME_END'] = int(time.time() * 1000)
-		CUR_LOG['TIME_LENGTH'] = CUR_LOG['TIME_END'] - CUR_LOG['TIME_START']
-		seconds = str(CUR_LOG['TIME_LENGTH'] // 1000)
-
-		Save()
-		ClearPresave()
-
-		if seconds == '1':
-			print("Log complete. Tracked " + seconds + " second.")
-		else:
-			print("Log complete. Tracked " + seconds + " seconds.")
-	else:
-		print("No log in progress.")
+	StopLog()
 
 # Start a new log and presave in case of crash.
 if args.start:
-	if(len(args.start) < 2):
-		print("Not enough arguments.") # TODO: Create step-by-step entry
-	else:
-		CUR_LOG['TIME_START'] = int(time.time() * 1000)
-		CUR_LOG['DISC'] = args.start[0]
-		CUR_LOG['PROJ'] = args.start[1]
-		if len(args.start) == 3:
-			CUR_LOG['NOTE'] = args.start[2]
-		PreSave()
-		print("Starting new log with discipline '" + CUR_LOG['DISC'] + "' and project '" + CUR_LOG['PROJ'] + "'.")
+	StartLog()

@@ -1,4 +1,3 @@
 include data/
-include data/logs.json
-include data/stat.json
+include data/prefs.json
 include data/presave.json

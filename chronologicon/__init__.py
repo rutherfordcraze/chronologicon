@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Chronologicon v4.20
+# Chronologicon v4.22
 # Rutherford Craze
 # https://craze.co.uk
 # 181020
@@ -223,11 +223,11 @@ def SaveStats():
 def Backup():
 	try:
 		with open(os.path.join(PREFS['SAVE_DIR'], LOGS_FILENAME)) as LOGS_FILE:
-			with open('data/chron_backup-' + time.strftime("%y%m%d_%H%M", time.localtime()) + '.json', 'w') as BACKUP_FILE:
+			with open(os.path.join(PREFS['SAVE_DIR'], 'chron_backup-' + time.strftime("%y%m%d_%H%M", time.localtime()) + '.json'), 'w') as BACKUP_FILE:
 				BACKUP_FILE.write(LOGS_FILE.read())
 		print("Log file backed up.")
-	except:
-		print("Unable to back up logs.")
+	except Exception as e:
+		print("Unable to back up logs.\nError: " + str(e))
 
 def Export(location):
 	try:

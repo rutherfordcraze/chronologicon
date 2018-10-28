@@ -1,23 +1,20 @@
 #!/usr/bin/env python
 
-# Chronologicon v4.22
+# Chronologicon v4.32
 # Rutherford Craze
 # https://craze.co.uk
 # 181020
 
 import json, os, time
+from easysettings import EasySettings
 
 LOGS_FILENAME = 'logs.json'
 STATS_FILENAME = 'stat.json'
-PRESAVE_FILENAME = 'data/presave.json'
-PREFS_FILENAME = 'data/prefs.json'
+PRESAVE_FILENAME = 'presave.json'
 
 LOGS_DEFAULT = []
-PREFS_DEFAULT = {'SAVE_DIR':''}
 
-PREFS = {
-	'SAVE_DIR':'',
-	}
+PREFS = EasySettings('chron_prefs.conf')
 CUR_LOG = {
 	'TIME_START':0,
 	'TIME_END':0,
@@ -45,36 +42,28 @@ CUR_STATS = {
 def Preflights(directoryInput):
 	# Preferences file checks
 	global PREFS
-	try:
-		with open(PREFS_FILENAME, 'r') as PREFS_FILE:
-			if directoryInput is None:
-				try:
-					PREFS = json.load(PREFS_FILE)
-					if PREFS['SAVE_DIR'] == '':
-						print("No save directory specified. Please use the -d command to set one.")
-				except Exception as e:
-					print("Coudn't load preferences.\nError: " + str(e))
-			else:
-				ChangeSaveDir(directoryInput[0])
-	except:
-		print("Coudn't load preferences. Creating defaults...")
-		try:
-			with open(PREFS_FILENAME, 'w') as PREFS_FILE:
-				PREFS_FILE.write(json.dumps(PREFS_DEFAULT))
-				print("Done.")
-		except Exception as e:
-			print("Coudn't create preferences.\nError: " + str(e))
-		return False
+	if directoryInput is None:
+		if PREFS.has_option('SAVE_DIR'):
+			None
+		else:
+			print("Please use the -d command to specify a save directory.")
+			return False
+	else:
+		if os.path.exists(directoryInput[0]):
+			ChangeSaveDir(directoryInput[0])
+		else:
+			print("Path not correct.")
+			return False
 
 	# Check if log file exists; create it (and its parent folder) if it doesn't
 	try:
-		with open(os.path.join(PREFS['SAVE_DIR'], LOGS_FILENAME), 'r') as LOGS_FILE:
+		with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), 'r') as LOGS_FILE:
 			return True
 	except:
 		print("Creating logs file...")
 		try:
 			# os.makedirs(os.path.dirname(LOGS_FILENAME), exist_ok=True)
-			with open(os.path.join(PREFS['SAVE_DIR'], LOGS_FILENAME), "w") as LOGS_FILE:
+			with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), "w") as LOGS_FILE:
 				LOGS_FILE.write(json.dumps(LOGS_DEFAULT))
 			print("Done.")
 			return True
@@ -101,10 +90,8 @@ def Preflights(directoryInput):
 
 def ChangeSaveDir(newSaveDir):
 	global PREFS
-	PREFS['SAVE_DIR'] = newSaveDir
-	with open(PREFS_FILENAME, "w") as PREFS_FILE:
-		PREFS_FILE.write(json.dumps(PREFS))
-		print("Save directory updated.")
+	PREFS.setsave('SAVE_DIR', newSaveDir)
+	print("Save directory updated.")
 
 
 # Start a new log and save its initial parameters to the presave file
@@ -118,7 +105,7 @@ def StartLog(args):
 				print("Log already in progress.")
 				return
 		except:
-			print("Error checking extant temp file. Continuing anyway.")
+			print("Error checking extant temp file. If this is your first log, please ignore this message.")
 
 		CUR_LOG['TIME_START'] = int(time.time() * 1000)
 		CUR_LOG['DISC'] = args[0]
@@ -161,12 +148,12 @@ def StopLog():
 	seconds = str(CUR_LOG['TIME_LENGTH'] // 1000)
 
 	try:
-		with open(os.path.join(PREFS['SAVE_DIR'], LOGS_FILENAME), 'rb+') as LOGS_FILE:
+		with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), 'rb+') as LOGS_FILE:
 			LOGS_FILE.seek(-1, os.SEEK_END)
 			LOGS_FILE.truncate()
 
-		with open(os.path.join(PREFS['SAVE_DIR'], LOGS_FILENAME), 'a') as LOGS_FILE:
-			if(os.path.getsize(os.path.join(PREFS['SAVE_DIR'], LOGS_FILENAME)) > 10):
+		with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), 'a') as LOGS_FILE:
+			if(os.path.getsize(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME)) > 10):
 				LOGS_FILE.write(',')
 			LOGS_FILE.write('\n' + json.dumps(CUR_LOG) + ']')
 
@@ -186,7 +173,7 @@ def StopLog():
 def SaveStats():
 	try:
 		# Read/ generate stats from logs file
-		with open(os.path.join(PREFS['SAVE_DIR'], LOGS_FILENAME)) as LOGS_FILE:
+		with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME)) as LOGS_FILE:
 			LOGS = json.load(LOGS_FILE)
 			for log in range(len(LOGS)):
 				thisLog = LOGS[log]
@@ -215,15 +202,15 @@ def SaveStats():
 				CUR_STATS['workByHour'][logHour] = CUR_STATS['workByHour'].get(logHour, 0) + 1
 
 		# Write statistics to stats file
-		with open(os.path.join(PREFS['SAVE_DIR'], STATS_FILENAME), 'w') as STATS_FILE:
+		with open(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME), 'w') as STATS_FILE:
 			STATS_FILE.write('[' + json.dumps(CUR_STATS) + ']')
 	except:
 		print("Unable to update statistics file.")
 
 def Backup():
 	try:
-		with open(os.path.join(PREFS['SAVE_DIR'], LOGS_FILENAME)) as LOGS_FILE:
-			with open(os.path.join(PREFS['SAVE_DIR'], 'chron_backup-' + time.strftime("%y%m%d_%H%M", time.localtime()) + '.json'), 'w') as BACKUP_FILE:
+		with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME)) as LOGS_FILE:
+			with open(os.path.join(PREFS.get('SAVE_DIR'), 'chron_backup-' + time.strftime("%y%m%d_%H%M", time.localtime()) + '.json'), 'w') as BACKUP_FILE:
 				BACKUP_FILE.write(LOGS_FILE.read())
 		print("Log file backed up.")
 	except Exception as e:
@@ -231,7 +218,7 @@ def Backup():
 
 def Export(location):
 	try:
-		with open(os.path.join(PREFS['SAVE_DIR'], LOGS_FILENAME)) as LOGS_FILE:
+		with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME)) as LOGS_FILE:
 			with open(os.path.join(location, 'chron-data-' + time.strftime("%y%m%d_%H%M", time.localtime()) + '.json'), 'w') as EXPORT_FILE:
 				EXPORT_FILE.write(LOGS_FILE.read())
 		print("Data file exported.")
@@ -239,7 +226,7 @@ def Export(location):
 		print("Unable to export data.")
 
 	try:
-		with open(os.path.join(PREFS['SAVE_DIR'], STATS_FILENAME)) as STATS_FILE:
+		with open(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME)) as STATS_FILE:
 			with open(os.path.join(location, 'chron-stat-' + time.strftime("%y%m%d_%H%M", time.localtime()) + '.json'), 'w') as EXPORT_FILE:
 				EXPORT_FILE.write(STATS_FILE.read())
 		print("Stats file exported.")

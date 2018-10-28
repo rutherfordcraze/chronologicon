@@ -1,3 +1,2 @@
-include data/
-include data/prefs.json
-include data/presave.json
+include prefs.json
+include presave.json

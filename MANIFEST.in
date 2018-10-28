@@ -1,2 +1,2 @@
-include prefs.json
-include presave.json
+include temp.json
+include prefs.conf

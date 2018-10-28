@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Chronologicon v4.32
+# Chronologicon v4.50
 # Rutherford Craze
 # https://craze.co.uk
 # 181020
@@ -10,11 +10,11 @@ from easysettings import EasySettings
 
 LOGS_FILENAME = 'logs.json'
 STATS_FILENAME = 'stat.json'
-PRESAVE_FILENAME = 'presave.json'
+PRESAVE_FILENAME = 'temp.json'
 
 LOGS_DEFAULT = []
 
-PREFS = EasySettings('chron_prefs.conf')
+CUR_FILEPATH = os.path.dirname(__file__)
 CUR_LOG = {
 	'TIME_START':0,
 	'TIME_END':0,
@@ -33,6 +33,8 @@ CUR_STATS = {
 	'totalLogs':0,
 	'totalTime':0
 	}
+
+PREFS = EasySettings(os.path.join(CUR_FILEPATH, 'prefs.conf'))
 
 
 
@@ -73,13 +75,12 @@ def Preflights(directoryInput):
 
 	# Check if presave file exists; create it if it doesn't
 	try:
-		with open(PRESAVE_FILENAME, 'r') as PRESAVE_FILE:
+		with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME), 'r') as PRESAVE_FILE:
 			return True
 	except:
 		print("Creating temporary save file...")
 		try:
-			# os.makedirs(os.path.dirname(PRESAVE_FILENAME), exist_ok=True)
-			with open(PRESAVE_FILENAME, "w") as PRESAVE_FILE:
+			with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME), "w") as PRESAVE_FILE:
 				PRESAVE_FILE.write("")
 			print("Done.")
 			return True
@@ -101,7 +102,7 @@ def StartLog(args):
 	else:
 		try:
 			# Abort if there's already a log running
-			if(os.path.getsize(PRESAVE_FILENAME) > 10):
+			if(os.path.getsize(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME)) > 10):
 				print("Log already in progress.")
 				return
 		except:
@@ -114,7 +115,7 @@ def StartLog(args):
 			CUR_LOG['XNOTE'] = args[2]
 
 		try:
-			with open(PRESAVE_FILENAME, 'w+') as PRESAVE_FILE:
+			with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME), 'w+') as PRESAVE_FILE:
 				PRESAVE_FILE.write(json.dumps(CUR_LOG))
 		except:
 			print("Unable to start log.")
@@ -125,7 +126,7 @@ def StartLog(args):
 # Cancel an in-progress log and reset the presave file
 def CancelLog(quietly=False):
 	try:
-		with open(PRESAVE_FILENAME, 'w') as PRESAVE_FILE:
+		with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME), 'w') as PRESAVE_FILE:
 			PRESAVE_FILE.write("")
 	except:
 		print("Error ending previous log.")
@@ -137,7 +138,7 @@ def CancelLog(quietly=False):
 # Record the current log and clear the presave file
 def StopLog():
 	try:
-		with open(PRESAVE_FILENAME) as PRESAVE_FILE:
+		with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME)) as PRESAVE_FILE:
 			CUR_LOG = json.load(PRESAVE_FILE)
 	except:
 		print("No log in progress.")

@@ -3,7 +3,8 @@ v4.51 — 181028
 
 A minimal time tracker, now rewritten for the command line. This is just the tracking side — it doesn't currently include support for displaying tracked information. This feature is in development.
 
-`$ pip install chronologicon` to install.
+Install:
+`$ pip install chronologicon`
 
 ## Commands
 `$ chron` with no arguments will run preflight checks. This will create any mission-critical files which are currently missing. It returns nothing if everything is OK.
@@ -11,6 +12,7 @@ A minimal time tracker, now rewritten for the command line. This is just the tra
 ```
 -s <args>   Start a new log timer
 -x          Complete the current log
+-v          View stats & graphs
 -b          Backup the log data file
 -d <dir>    Change the save directory
 --cancel    Abort the current entry

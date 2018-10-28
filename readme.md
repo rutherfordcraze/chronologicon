@@ -1,5 +1,5 @@
 # Chronologicon
-v4.14 — 181020
+v4.51 — 181028
 
 A minimal time tracker, now rewritten for the command line. This is just the tracking side — it doesn't currently include support for displaying tracked information. This feature is in development.
 

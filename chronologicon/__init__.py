@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Chronologicon v4.50
+# Chronologicon v4.51
 # Rutherford Craze
 # https://craze.co.uk
 # 181020
@@ -25,13 +25,13 @@ CUR_LOG = {
 	'XNOTE':""
 	}
 CUR_STATS = {
-	'discByTime':{},
-	'projByTime':{},
-	'projByDisc':{},
-	'workByHour':{},
-	'avgLogLength':0,
-	'totalLogs':0,
-	'totalTime':0
+	'discbytime':{},
+	'projbytime':{},
+	'projbydisc':{},
+	'workbyhour':{},
+	'avgloglength':0,
+	'totallogs':0,
+	'totaltime':0
 	}
 
 PREFS = EasySettings(os.path.join(CUR_FILEPATH, 'prefs.conf'))
@@ -180,27 +180,27 @@ def SaveStats():
 				thisLog = LOGS[log]
 
 				# Total logs
-				CUR_STATS['totalLogs'] = len(LOGS)
+				CUR_STATS['totallogs'] = len(LOGS)
 
 				# Total ms tracked
-				CUR_STATS['totalTime'] += thisLog['TIME_LENGTH']
+				CUR_STATS['totaltime'] += thisLog['TIME_LENGTH']
 
 				# Average log duration
-				CUR_STATS['avgLogLength'] = CUR_STATS['totalTime'] // CUR_STATS['totalLogs']
+				CUR_STATS['avgloglength'] = CUR_STATS['totaltime'] // CUR_STATS['totallogs']
 
 				# Disciplines by time
-				CUR_STATS['discByTime'][thisLog['DISC']] = CUR_STATS['discByTime'].get(thisLog['DISC'], 0) + thisLog['TIME_LENGTH']
+				CUR_STATS['discbytime'][thisLog['DISC']] = CUR_STATS['discbytime'].get(thisLog['DISC'], 0) + thisLog['TIME_LENGTH']
 
 				# Projects by time
-				CUR_STATS['projByTime'][thisLog['PROJ']] = CUR_STATS['projByTime'].get(thisLog['PROJ'], 0) + thisLog['TIME_LENGTH']
+				CUR_STATS['projbytime'][thisLog['PROJ']] = CUR_STATS['projbytime'].get(thisLog['PROJ'], 0) + thisLog['TIME_LENGTH']
 
 				# Projects-by-discipline breakdown assignment
-				CUR_STATS['projByDisc'][thisLog['PROJ']] = CUR_STATS['projByDisc'].get(thisLog['PROJ'], dict())
-				CUR_STATS['projByDisc'][thisLog['PROJ']][thisLog['DISC']] = CUR_STATS['projByDisc'][thisLog['PROJ']].get(thisLog['DISC'], 0) + thisLog['TIME_LENGTH']
+				CUR_STATS['projbydisc'][thisLog['PROJ']] = CUR_STATS['projbydisc'].get(thisLog['PROJ'], dict())
+				CUR_STATS['projbydisc'][thisLog['PROJ']][thisLog['DISC']] = CUR_STATS['projbydisc'][thisLog['PROJ']].get(thisLog['DISC'], 0) + thisLog['TIME_LENGTH']
 
 				# Productivity by hour
 				logHour = time.strftime("%H", time.localtime(thisLog['TIME_START']/1000))
-				CUR_STATS['workByHour'][logHour] = CUR_STATS['workByHour'].get(logHour, 0) + 1
+				CUR_STATS['workbyhour'][logHour] = CUR_STATS['workbyhour'].get(logHour, 0) + 1
 
 		# Write statistics to stats file
 		with open(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME), 'w') as STATS_FILE:

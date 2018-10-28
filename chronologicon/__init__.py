@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-# Chronologicon v4.51
+# Chronologicon v4.x
 # Rutherford Craze
 # https://craze.co.uk
-# 181020
+# 181028
 
 import json, os, time
 from easysettings import EasySettings
@@ -145,8 +145,8 @@ def StopLog():
 		return
 
 	CUR_LOG['TIME_END'] = int(time.time() * 1000)
-	CUR_LOG['TIME_LENGTH'] = CUR_LOG['TIME_END'] - CUR_LOG['TIME_START']
-	seconds = str(CUR_LOG['TIME_LENGTH'] // 1000)
+	CUR_LOG['TIME_LENGTH'] = (CUR_LOG['TIME_END'] - CUR_LOG['TIME_START']) // 1000
+	seconds = str(CUR_LOG['TIME_LENGTH'])
 
 	try:
 		with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), 'rb+') as LOGS_FILE:
@@ -207,6 +207,15 @@ def SaveStats():
 			STATS_FILE.write('[' + json.dumps(CUR_STATS) + ']')
 	except:
 		print("Unable to update statistics file.")
+
+def LoadStats():
+	try:
+		# Write statistics to stats file
+		with open(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME), 'r') as STATS_FILE:
+			CUR_STATS = json.load(STATS_FILE)
+			return CUR_STATS
+	except:
+		return False
 
 def Backup():
 	try:

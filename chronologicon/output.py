@@ -136,7 +136,7 @@ def ViewStats():
 
 	Spacer = "\n\n"
 	print(Spacer)
-	print("  ─── Chronologicon 4.56 ─── Statistics Overview ───\n\n")
+	print("  ─── Chronologicon 4.58 ─── Statistics Overview ───\n\n")
 	print(TotalEntries)
 	print(TotalTime)
 	print(AvgEntry)

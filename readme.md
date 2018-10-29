@@ -57,3 +57,5 @@ Because the commands Chronologicon takes are all technically optional arguments,
 `$ chron -x -v` will stop the current log and then display statistics.
 
 I haven't tested every combination, so use them at your own risk (and make regular backups!)
+
+![Example screenshot](screenshot.png)

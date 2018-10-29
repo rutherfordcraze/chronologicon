@@ -1,5 +1,5 @@
 # Chronologicon
-v4.57 — 181028
+v4.57 — 181029
 
 A minimal time tracker, now rewritten for the command line. 
 
@@ -9,8 +9,18 @@ Install:
 `$ pip install chronologicon`
 
 
+## Logs
+Chronologicon stores work sessions as *logs.* Each log has a named *discipline* and *project,* along with an optional note. The project should be self-explanatory; the discipline refers to the general type of work. I separate mine into *visual, code,* and *research*, but you should use whichever categories feel most suited to your workflow.
+
+The note is optional, but may be useful to you for recording the specific task you're working on.
+
+A list of all logs is saved in `logs.json`, in Chronologicon's save directory. This file can (and should) be backed up with the `$ chron -b` command.
+
+`stat.json` contains a more lightweight summary of these log data, which is used to display the graphs. It's overwritten every time you complete a log.
+
+
 ## Commands
-`$ chron` with no arguments will run preflight checks. This will create any mission-critical files which are currently missing. It returns nothing if everything is OK.
+`$ chron` with no arguments will run preflight checks. This will create any mission-critical files which are currently missing. If everything is OK, it returns nothing.
 
 ```
 -s <args>   Start a new log timer

@@ -54,7 +54,7 @@ def Preflights(directoryInput):
 		if os.path.exists(directoryInput[0]):
 			ChangeSaveDir(directoryInput[0])
 		else:
-			print("Path not correct.")
+			print("Path does not exist.")
 			return False
 
 	# Check if log file exists; create it (and its parent folder) if it doesn't

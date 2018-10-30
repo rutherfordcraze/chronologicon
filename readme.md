@@ -1,9 +1,7 @@
 # Chronologicon
-v4.57 — 181029
+v4.60 — 181030
 
-A minimal time tracker, now rewritten for the command line. 
-
-Chron stores in-progress logs in a temporary file in its install directory, meaning you can safely exit all terminal windows, restart your computer, and install updates while logging.
+A minimal time tracker, now rewritten for the command line. Chronologicon records your work sessions and displays graphs based on your projects.
 
 Install:
 `$ pip install chronologicon`
@@ -30,7 +28,7 @@ A list of all logs is saved in `logs.json`, in Chronologicon's save directory. T
 ```
 -s <args>   Start a new log timer
 -x          Complete the current log
--v          View stats & graphs
+-v <args>   View stats & graphs
 -b          Backup the log data file
 -d <dir>    Change the save directory
 --cancel    Abort the current entry
@@ -49,9 +47,6 @@ Create a new log with discipline, project, and (optionally) a note.
 `$ chron -x`
 Stop tracking and save the current log.
 
-`$ chron -e /Users/<username>/Desktop`
-Save the log data file and a stats file to the desktop.
-
 
 ## Combinations
 
@@ -62,3 +57,16 @@ Because the commands Chronologicon takes are all technically optional arguments,
 `$ chron -x -v` will stop the current log and then display statistics.
 
 I haven't tested every combination, so use them at your own risk (and make regular backups!)
+
+
+## Extra
+
+`$ chron -v verbose` will return additional projects (every project with a graph width of 1 character or more).
+
+`$ chron -v uniform` will make all project graphs full-width.
+
+Using `uniform` and `verbose` in combination will display all projects.
+
+Chron stores in-progress logs in a temporary file in its install directory, meaning you can safely exit all terminal windows, restart your computer, and install updates while logging. I don't recommend relying on this feature, but I hope it can provide some peace of mind.
+
+— R

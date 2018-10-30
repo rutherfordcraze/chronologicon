@@ -94,8 +94,12 @@ def GetWbh():
 
 	return(wbhGraph, wbhKey)
 
-def GetPbt():
-	projects = 5
+def GetPbt(verbose = False, uniform = False):
+	if verbose == False:
+		projects = 5
+	else:
+		projects = len(STATS['projbytime'])
+
 	graphWidth = BAR_WIDTH;
 	pbt = sorted(STATS['projbytime'].items(), key=operator.itemgetter(1))
 	maxValue = max(STATS['projbytime'].items(), key=operator.itemgetter(1))[1]
@@ -104,23 +108,38 @@ def GetPbt():
 	for project in range(len(pbt)):
 		if project < projects:
 			k = pbt[len(pbt) - 1 - project][0]
+
+			# Skip blank project names
+			if k == '':
+				continue
+
 			v = pbt[len(pbt) - 1 - project][1]
 			spacer = BAR_WIDTH - len(k) - len(str(v)) + 1
 
-			dbtGraph, dbtKey = GetDbt(k, int(float(v) / float(maxValue) * graphWidth))
+			if uniform:
+				pBarWidth = graphWidth
+			else:
+				pBarWidth = int(float(v) / float(maxValue) * graphWidth)
+
+			# Skip zero-width graph bars
+			if pBarWidth < 1:
+				continue
+
+			dbtGraph, dbtKey = GetDbt(k, pBarWidth)
+
 			pbtList += dbtGraph + "\n"
 			pbtList += "  " + str(k) + (spacer * ' ') + str(v / 60 / 60) + " h\n\n"
 
 	return pbtList
 
 
-def ViewStats():
+def ViewStats(args):
 	global STATS
 	STATS = chronologicon.LoadStats()
 	STATS = STATS[0]
 
 	if STATS == False:
-		print("Unable to load stats file. Please check it exists.")
+		print("Unable to load file: " + STATS_FILENAME + ". Please ensure it exists.")
 		return
 
 	# Overview numbers
@@ -131,21 +150,36 @@ def ViewStats():
 	# Graphs
 	dbtGraph, dbtKey = GetDbt()
 	wbhGraph, wbhKey = GetWbh()
-	pbtList = GetPbt()
+
+	if len(args) > 0:
+		verbose = False
+		uniform = False
+
+		if 'verbose' in args:
+			verbose = True
+
+		if 'uniform' in args:
+			uniform = True
+
+		pbtList = GetPbt(verbose, uniform)
+	else:
+		pbtList = GetPbt()
 
 
-	Spacer = "\n\n"
-	print(Spacer)
-	print("  ─── Chronologicon 4.58 ─── Statistics Overview ───\n\n")
+	print("\n\n  ─── Chronologicon 4.60 ─── Statistics Overview ───\n\n")
+
 	print(TotalEntries)
 	print(TotalTime)
 	print(AvgEntry)
+
 	print('\n  Work by discipline\n')
 	print(dbtGraph)
 	print(dbtKey)
+
 	print('\n\n  Work by hour')
 	print(wbhGraph)
 	print('  | ' + (BAR_WIDTH - 2) * '─')
 	print(wbhKey)
+
 	print('\n\n  Largest projects\n')
 	print(pbtList)

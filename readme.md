@@ -8,6 +8,11 @@ Chron stores in-progress logs in a temporary file in its install directory, mean
 Install:
 `$ pip install chronologicon`
 
+&nbsp;
+
+
+![Example screenshot](screenshot.png)
+
 
 ## Logs
 Chronologicon stores work sessions as *logs.* Each log has a named *discipline* and *project,* along with an optional note. The project should be self-explanatory; the discipline refers to the general type of work. I separate mine into *visual, code,* and *research*, but you should use whichever categories feel most suited to your workflow.
@@ -57,5 +62,3 @@ Because the commands Chronologicon takes are all technically optional arguments,
 `$ chron -x -v` will stop the current log and then display statistics.
 
 I haven't tested every combination, so use them at your own risk (and make regular backups!)
-
-![Example screenshot](screenshot.png)

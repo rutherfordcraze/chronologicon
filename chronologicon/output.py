@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # Chronologicon v4.x
 # Rutherford Craze
@@ -173,13 +174,13 @@ def ViewStats(args):
 	print(AvgEntry)
 
 	print('\n  Work by discipline\n')
-	print(dbtGraph)
+	print(dbtGraph.encode('utf-8'))
 	print(dbtKey)
 
 	print('\n\n  Work by hour')
-	print(wbhGraph)
+	print(wbhGraph.encode('utf-8'))
 	print('  | ' + (BAR_WIDTH - 2) * '─')
 	print(wbhKey)
 
 	print('\n\n  Largest projects\n')
-	print(pbtList)
+	print(pbtList.encode('utf-8'))

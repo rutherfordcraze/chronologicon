@@ -54,8 +54,13 @@ def Preflights(directoryInput):
 		if os.path.exists(directoryInput[0]):
 			ChangeSaveDir(directoryInput[0])
 		else:
-			print("Path does not exist.")
-			return False
+			print("Creating directory...")
+			try:
+				os.makedirs(directoryInput[0])
+				ChangeSaveDir(directoryInput[0])
+			except Exception as e:
+				print("Unable to create new save directory.\nError: " + str(e))
+				return False
 
 	# Check if log file exists; create it (and its parent folder) if it doesn't
 	try:
@@ -128,8 +133,8 @@ def CancelLog(quietly=False):
 	try:
 		with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME), 'w') as PRESAVE_FILE:
 			PRESAVE_FILE.write("")
-	except:
-		print("Error ending previous log.")
+	except Exception as e:
+		print("Error ending previous log:\n" + str(e))
 		return
 
 	if quietly is not True:

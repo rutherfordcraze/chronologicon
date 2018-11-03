@@ -156,6 +156,11 @@ def ViewStats(args):
 		verbose = False
 		uniform = False
 
+		if 'refresh' in args:
+			chronologicon.SaveStats()
+			STATS = chronologicon.LoadStats() # Reload
+			STATS = STATS[0]
+
 		if 'verbose' in args:
 			verbose = True
 
@@ -167,7 +172,7 @@ def ViewStats(args):
 		pbtList = GetPbt()
 
 
-	print("\n\n  ─── Chronologicon 4.61 ─── Statistics Overview ───\n\n")
+	print("\n\n  ─── Chronologicon 4.62 ─── Statistics Overview ───\n\n")
 
 	print(TotalEntries)
 	print(TotalTime)

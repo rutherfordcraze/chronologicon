@@ -1,5 +1,5 @@
 # Chronologicon
-v4.61 — 181101
+v4.62 — 181103
 
 A minimal time tracker, now rewritten for the command line. Chronologicon records your work sessions and displays graphs based on your projects.
 
@@ -66,6 +66,8 @@ I haven't tested every combination, so use them at your own risk (and make regul
 `$ chron -v uniform` will make all project graphs full-width.
 
 Using `uniform` and `verbose` in combination will display all projects.
+
+The `stats.json` file is used for displaying graphs, but it's only updated when a new log is completed. To force an update to this file, you can use `$ chron -v refresh`.
 
 Chron stores in-progress logs in a temporary file in its install directory, meaning you can safely exit all terminal windows, restart your computer, and install updates while logging. I don't recommend relying on this feature, but I hope it can provide some peace of mind.
 

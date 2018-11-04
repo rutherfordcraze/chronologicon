@@ -6,7 +6,7 @@
 # https://craze.co.uk
 # 181103
 
-import chronologicon, operator
+import chronologicon, time
 
 LOGS_FILENAME = chronologicon.LOGS_FILENAME
 LOGS = chronologicon.LoadLogs()
@@ -16,33 +16,56 @@ if LOGS == False:
 	print("Unable to load file: " + LOGS_FILENAME + ". Please ensure it exists.")
 	PREFLIGHTS = False
 
-def PrintRecentLogs(qty = 10, verbose = False):
-	if PREFLIGHTS == False:
-		return
+def PrintRecentLogs(verbose = False):
+	qty = 10
+	columnTabs = [6, 20, 40, 60]
 
 	if verbose:
+		print("\nDisplaying all logs:\n")
 		qty = len(LOGS)
+	else:
+		print("\nDisplaying " + str(qty) + " most recent logs:\n")
 
 	totalLogs = len(LOGS)
 
-	print("\nDisplaying " + str(qty) + " most recent logs:\n")
+	print(u"\u001b[37mID    Discipline    Project             Start               End\u001b[0m") # This is a catastrophically bad way of doing it
 
 	for i in range(qty):
-		line = str(i + 1) + "  "
-		if i + 1 < 10:
-			line += " "
+		logID = totalLogs - 1 - i
+		line = str(logID) + "  "
 
-		line += LOGS[totalLogs - 1 - i]['DISC'] + "  "
+		if len(line) < columnTabs[0]:
+			line += " " * (columnTabs[0] - len(line))
 
-		if len(line) < 16:
-			line += " " * (16 - len(line))
+		line += LOGS[logID]['DISC'] + "  "
+
+		if len(line) < columnTabs[1]:
+			line += " " * (columnTabs[1] - len(line))
 
 		line += LOGS[totalLogs - 1 - i]['PROJ']
 
-		if LOGS[totalLogs - 1 - i]['XNOTE'] is not "":
-			if len(line) < 30:
-				line += " " * (30 - len(line))
-			line += "  " + LOGS[totalLogs - 1 - i]['XNOTE']
+		if len(line) < columnTabs[2]:
+			line += " " * (columnTabs[2] - len(line))
+
+		line += time.strftime("%y/%m/%d %H:%M", time.localtime(LOGS[logID]['TIME_START']/1000))
+
+		if len(line) < columnTabs[3]:
+			line += " " * (columnTabs[3] - len(line))
+
+		line += time.strftime("%y/%m/%d %H:%M", time.localtime(LOGS[logID]['TIME_END']/1000))
 
 		print(line)
 	print("\n")
+
+
+def Maintenance(args):
+	if PREFLIGHTS == False:
+		return
+
+	verbose = False
+
+	if 'verbose' in args:
+		verbose = True
+
+	if 'list' in args:
+		PrintRecentLogs(verbose)

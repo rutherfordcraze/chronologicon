@@ -31,4 +31,4 @@ if args.view is not None:
 	chronologicon.output.ViewStats(args.view)
 
 if args.maintenance is not None:
-	chronologicon.maintenance.PrintRecentLogs()
+	chronologicon.maintenance.Maintenance(args.maintenance)

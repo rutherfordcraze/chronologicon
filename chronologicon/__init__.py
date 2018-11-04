@@ -215,10 +215,19 @@ def SaveStats():
 
 def LoadStats():
 	try:
-		# Write statistics to stats file
+		# Load statistics from stats file
 		with open(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME), 'r') as STATS_FILE:
 			CUR_STATS = json.load(STATS_FILE)
 			return CUR_STATS
+	except:
+		return False
+
+def LoadLogs(): # Used by maintenance
+	try:
+		# Load logs from logs file
+		with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), 'r') as LOGS_FILE:
+			CUR_LOGS = json.load(LOGS_FILE)
+			return CUR_LOGS
 	except:
 		return False
 

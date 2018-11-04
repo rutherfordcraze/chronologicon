@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import chronologicon, argparse, chronologicon.output
+import chronologicon, argparse, chronologicon.output, chronologicon.maintenance
 
 # Set up argparse to get the arguments passed to Chron
 parser = argparse.ArgumentParser(description="A minimal time tracker.", prog="chron")
@@ -10,6 +10,7 @@ parser.add_argument("--cancel", action="store_true", help="Cancel the current lo
 parser.add_argument("-b", "--backup", action="store_true", help="Back up the log file.")
 parser.add_argument("-d", "--directory", nargs=1, help="Set a specified directory as the save folder.")
 parser.add_argument("-v", "--view", nargs="*", help="View graphs for the current logs.")
+parser.add_argument("-m", "--maintenance", nargs="*", help="Maintenance functions (in dev)")
 args = parser.parse_args()
 
 chronologicon.Preflights(args.directory)
@@ -28,3 +29,6 @@ if args.backup:
 
 if args.view is not None:
 	chronologicon.output.ViewStats(args.view)
+
+if args.maintenance is not None:
+	chronologicon.maintenance.PrintRecentLogs()

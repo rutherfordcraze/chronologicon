@@ -172,7 +172,7 @@ def ViewStats(args):
 		pbtList = GetPbt()
 
 
-	print("\n\n  ─── Chronologicon 4.63 ─── Statistics Overview ───\n\n")
+	print("\n\n  Chronologicon ─ Statistics Overview:\n\n")
 
 	print(TotalEntries)
 	print(TotalTime)

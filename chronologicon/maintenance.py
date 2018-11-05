@@ -16,19 +16,19 @@ if LOGS == False:
 	print("Unable to load file: " + LOGS_FILENAME + ". Please ensure it exists.")
 	PREFLIGHTS = False
 
-def PrintRecentLogs(verbose = False):
+def List(verbose = False):
 	qty = 10
 	columnTabs = [6, 20, 40, 60]
 
 	if verbose:
-		print("\nDisplaying all logs:\n")
+		print("\n  Displaying all logs:\n")
 		qty = len(LOGS)
 	else:
-		print("\nDisplaying " + str(qty) + " most recent logs:\n")
+		print("\n  Displaying " + str(qty) + " most recent logs:\n")
 
 	totalLogs = len(LOGS)
 
-	print(u"\u001b[37mID    Discipline    Project             Start               End\u001b[0m") # This is a catastrophically bad way of doing it
+	print(u"\u001b[37m  ID    Discipline    Project             Start               End\u001b[0m") # This is a catastrophically bad way of doing it
 
 	for i in range(qty):
 		logID = totalLogs - 1 - i
@@ -54,8 +54,8 @@ def PrintRecentLogs(verbose = False):
 
 		line += time.strftime("%y/%m/%d %H:%M", time.localtime(LOGS[logID]['TIME_END']/1000))
 
-		print(line)
-	print("\n")
+		print("  " + line)
+	print(" ")
 
 
 def Maintenance(args):

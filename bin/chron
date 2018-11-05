@@ -1,34 +1,85 @@
 #!/usr/bin/env python
 
-import chronologicon, argparse, chronologicon.output, chronologicon.maintenance
+import chronologicon, chronologicon.output, chronologicon.maintenance, sys
+py3 = sys.version_info[0] > 2
 
-# Set up argparse to get the arguments passed to Chron
-parser = argparse.ArgumentParser(description="A minimal time tracker.", prog="chron")
-parser.add_argument("-s", "--start", nargs="*", help="Start a new log.")
-parser.add_argument("-x", "--stop", action="store_true", help="Complete the current log.")
-parser.add_argument("--cancel", action="store_true", help="Cancel the current log.")
-parser.add_argument("-b", "--backup", action="store_true", help="Back up the log file.")
-parser.add_argument("-d", "--directory", nargs=1, help="Set a specified directory as the save folder.")
-parser.add_argument("-v", "--view", nargs="*", help="View graphs for the current logs.")
-parser.add_argument("-m", "--maintenance", nargs="*", help="Maintenance functions (in dev)")
-args = parser.parse_args()
+# Logging and entry
+START_COMMANDS = ['start', 'begin', 's', '-s']
+STOP_COMMANDS = ['stop', 'end', 'x', '-x']
+ABORT_COMMANDS = ['abort', 'cancel']
+STATUS_COMMANDS = ['status']
 
-chronologicon.Preflights(args.directory)
+# Stats and graphs
+STATS_COMMANDS = ['stats', 'graphs', 'v', '-v']
 
-if args.stop:
-	chronologicon.StopLog()
+# Maintenance
+BACKUP_COMMANDS = ['backup', 'b', '-b']
+LIST_COMMANDS = ['list']
+EDIT_COMMANDS = ['edit']
+DIRECTORY_COMMANDS = ['directory', 'd', '-d']
 
-if args.start is not None:
-	chronologicon.StartLog(args.start)
+# Help
+HELP_COMMANDS = ['help', 'h', '--help', '-h']
 
-if args.cancel:
-	chronologicon.CancelLog()
+# --------------------------------------------------
 
-if args.backup:
-	chronologicon.Backup()
+if len(sys.argv) > 1:
+	mainCommand = sys.argv[1] #sys.argv[0] is the name of the script
+	options = sys.argv[2:]
 
-if args.view is not None:
-	chronologicon.output.ViewStats(args.view)
+	# Logging and entry
+	if mainCommand in START_COMMANDS:
+		chronologicon.StartLog(options)
 
-if args.maintenance is not None:
-	chronologicon.maintenance.Maintenance(args.maintenance)
+	elif mainCommand in STOP_COMMANDS:
+		chronologicon.StopLog()
+
+	elif mainCommand in ABORT_COMMANDS:
+		if py3:
+			response = input("Cancel the log in progress? (y/n): ")
+		else:
+			response = raw_input("Cancel the log in progress? (y/n): ")
+
+		if response == 'y':
+			chronologicon.CancelLog()
+		else:
+			print("Log not cancelled.")
+
+	elif mainCommand in STATUS_COMMANDS:
+		chronologicon.Status()
+
+	# Stats and graphs
+	elif mainCommand in STATS_COMMANDS:
+		chronologicon.output.ViewStats(options)
+
+	# Maintenance
+	elif mainCommand in BACKUP_COMMANDS:
+		chronologicon.Backup()
+
+	elif mainCommand in LIST_COMMANDS:
+		if 'verbose' in options:
+			chronologicon.maintenance.List(True)
+		else:
+			chronologicon.maintenance.List()
+
+	elif mainCommand in DIRECTORY_COMMANDS:
+		# Change directory to the one provided, or if none is provided, ask for one
+		if len(options) > 0:
+			chronologicon.ChangeSaveDir(options[0])
+		else:
+			if py3:
+				response = input("New save directory: ")
+			else:
+				response = raw_input("New save directory: ")
+
+			chronologicon.ChangeSaveDir(response)
+
+	# Help
+	elif mainCommand in HELP_COMMANDS:
+		print("A list of commands can be found at https://github.com/rutherfordcraze/chronologicon.\nThis help section will be amended shortly.")
+
+	else:
+		print("Command not recognised.")
+
+else:
+	print("Not enough arguments.")

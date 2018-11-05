@@ -140,6 +140,16 @@ def CancelLog(quietly=False):
 	if quietly is not True:
 		print("Log cancelled.")
 
+# Display any current logs
+def Status():
+	try:
+		with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME)) as PRESAVE_FILE:
+			CUR_LOG = json.load(PRESAVE_FILE)
+			print("Log in progress with discipline '" + CUR_LOG['DISC'] + "' and project '" + CUR_LOG['PROJ'] + "'.")
+	except:
+		print("No log in progress.")
+		return
+
 # Record the current log and clear the presave file
 def StopLog():
 	try:

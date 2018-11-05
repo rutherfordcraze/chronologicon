@@ -1,5 +1,5 @@
 # Chronologicon
-v4.63 — 181103
+v4.70 — 181105
 
 A minimal time tracker, now rewritten for the command line. Chronologicon records your work sessions and displays graphs based on your projects.
 
@@ -17,57 +17,62 @@ Chronologicon stores work sessions as *logs.* Each log has a named *discipline* 
 
 The note is optional, but may be useful to you for recording the specific task you're working on.
 
-A list of all logs is saved in `logs.json`, in Chronologicon's save directory. This file can (and should) be backed up with the `$ chron -b` command.
+A list of all logs is saved in `logs.json`, in Chronologicon's save directory. This file can (and should) be backed up with the `$ chron backup` command.
 
 `stat.json` contains a more lightweight summary of these log data, which is used to display the graphs. It's overwritten every time you complete a log.
 
 
 ## Commands
-`$ chron` with no arguments will run preflight checks. This will create any mission-critical files which are currently missing. If everything is OK, it returns nothing.
 
 ```
--s <args>   Start a new log timer
--x          Complete the current log
--v <args>   View stats & graphs
--b          Backup the log data file
--d <dir>    Change the save directory
---cancel    Abort the current entry
+start <args>      Start a new log timer
+stop              Complete the current log
+status            Check whether a log is in progress
+cancel            Abort the current entry
+stats <args>      View stats & graphs
+list              Show the 10 most recent logs
+backup            Backup the log data file
+directory <dir>   Change the save directory
 ```
 
-The first time you use Chronologicon, you'll need to specify a save directory with the `-d` argument.
+The first time you use Chronologicon, you'll need to specify a save directory with the `directory` command.
 
 
 ## Usage
 
-`$ chron -d ~/Documents/Chron` Change the save directory to a folder on your computer.
+`$ chron directory ~/Documents/Chron` Change the save directory to a folder on your computer.
 
-`$ chron -s 'discipline' 'project' 'note'`
+`$ chron start 'discipline' 'project' 'note'`
 Create a new log with discipline, project, and (optionally) a note.
 
-`$ chron -x`
+`$ chron stop`
 Stop tracking and save the current log.
 
 
-## Combinations
 
-Because the commands Chronologicon takes are all technically optional arguments, you can use them in combination with each other:
+## Stats
 
-`$ chron -x -s <args>` will stop the current log and start a new one with the specified discipline and project.
+`$ chron stats` has optional arguments:
 
-`$ chron -x -v` will stop the current log and then display statistics.
+```
+verbose      Show additional projects
+uniform      Display project graphs as full width
+refresh      Force recalculate stats
+```
 
-I haven't tested every combination, so use them at your own risk (and make regular backups!)
 
+## Synonyms
 
-## Extra
+Some commands have synonyms, which you can use if you prefer. Some are actual synonyms, others are shortcuts or legacy commands:
 
-`$ chron -v verbose` will return additional projects (every project with a graph width of 1 character or more).
-
-`$ chron -v uniform` will make all project graphs full-width.
-
-Using `uniform` and `verbose` in combination will display all projects.
-
-The `stats.json` file is used for displaying graphs, but it's only updated when a new log is completed. To force an update to this file, you can use `$ chron -v refresh`.
+```
+start       s, -s, begin
+stop        x, -x, end
+cancel      abort
+stats       v, -v, graphs
+backup      b, -b
+directory   d, -d
+```
 
 Chron stores in-progress logs in a temporary file in its install directory, meaning you can safely exit all terminal windows, restart your computer, and install updates while logging. I don't recommend relying on this feature, but I hope it can provide some peace of mind.
 

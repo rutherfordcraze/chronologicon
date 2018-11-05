@@ -32,6 +32,7 @@ cancel            Abort the current entry
 stats <args>      View stats & graphs
 list              Show the 10 most recent logs
 backup            Backup the log data file
+edit <args>       Edit an attribute of a specific log
 directory <dir>   Change the save directory
 ```
 
@@ -80,6 +81,12 @@ backup      b, -b
 directory   d, -d
 ```
 
-Chron stores in-progress logs in a temporary file in its install directory, meaning you can safely exit all terminal windows, restart your computer, and install updates while logging. I don't recommend relying on this feature, but I hope it can provide some peace of mind.
 
-— R
+## Editing
+
+Editing of previous logs is a new and largely untested feature. Make sure your logs file is backed up.
+
+Usage: `$ chron edit <logID> <attribute> <newValue>`
+Example: `$ chron edit 204 discipline 'music'`
+
+To view the IDs of your 10 most recent logs, you can use `$ chron list`. To view the ID of every log, use `$ chron list verbose`.

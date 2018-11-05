@@ -171,7 +171,7 @@ def StopLog():
 		with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), 'a') as LOGS_FILE:
 			if(os.path.getsize(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME)) > 10):
 				LOGS_FILE.write(',')
-			LOGS_FILE.write('\n' + json.dumps(CUR_LOG) + ']')
+			LOGS_FILE.write('\n' + json.dumps(CUR_LOG, indent=4) + ']')
 
 		CancelLog(True)
 
@@ -219,7 +219,7 @@ def SaveStats():
 
 		# Write statistics to stats file
 		with open(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME), 'w') as STATS_FILE:
-			STATS_FILE.write('[' + json.dumps(CUR_STATS) + ']')
+			STATS_FILE.write('[' + json.dumps(CUR_STATS, indent=4) + ']')
 	except:
 		print("Unable to update statistics file.")
 

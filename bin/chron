@@ -3,6 +3,25 @@
 import chronologicon, chronologicon.output, chronologicon.maintenance, sys
 py3 = sys.version_info[0] > 2
 
+HELP_TEXT = """
+Usage:
+  chron <command> <options>
+
+Commands:
+  start <options>         Start a new log timer.
+  stop                    Complete the current log.
+  status                  Check whether a log is in progress.
+  cancel                  Abort the current entry.
+  stats <options>         View stats & graphs.
+  list                    Show the 10 most recent logs.
+  backup                  Backup the log data file.
+  edit <options>          Edit an attribute of a specific log.
+  directory <options>     Change the save directory.
+
+For detailed usage:
+  https://github.com/rutherfordcraze/chronologicon
+"""
+
 # Logging and entry
 START_COMMANDS = ['start', 'begin', 's', '-s']
 STOP_COMMANDS = ['stop', 'end', 'x', '-x']
@@ -74,9 +93,15 @@ if len(sys.argv) > 1:
 
 			chronologicon.ChangeSaveDir(response)
 
+	elif mainCommand in EDIT_COMMANDS:
+		if len(options) > 2:
+			chronologicon.maintenance.Edit(options[0], options[1], options[2])
+		else:
+			print("Unexpected input. Usage:\n$ chron edit <logID> <attribute> <newValue>")
+
 	# Help
 	elif mainCommand in HELP_COMMANDS:
-		print("A list of commands can be found at https://github.com/rutherfordcraze/chronologicon.\nThis help section will be amended shortly.")
+		print(HELP_TEXT)
 
 	else:
 		print("Command not recognised.")

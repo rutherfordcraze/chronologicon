@@ -6,11 +6,19 @@
 # https://craze.co.uk
 # 181103
 
-import chronologicon, time
+import chronologicon, time, os, json
+from datetime import datetime
 
+PREFS = chronologicon.PREFS
 LOGS_FILENAME = chronologicon.LOGS_FILENAME
 LOGS = chronologicon.LoadLogs()
 PREFLIGHTS = True # False == Fail
+
+SYN_DISC = ['discipline', 'disc', 'sector']
+SYN_PROJ = ['project', 'proj']
+
+SYN_TIME_START = ['start', 'start_time', 'time_start']
+SYN_TIME_END = ['end', 'end_time', 'time_end']
 
 if LOGS == False:
 	print("Unable to load file: " + LOGS_FILENAME + ". Please ensure it exists.")
@@ -20,13 +28,13 @@ def List(verbose = False):
 	qty = 10
 	columnTabs = [6, 20, 40, 60]
 
-	if verbose:
+	totalLogs = len(LOGS)
+
+	if totalLogs < qty or verbose:
 		print("\n  Displaying all logs:\n")
-		qty = len(LOGS)
+		qty = totalLogs
 	else:
 		print("\n  Displaying " + str(qty) + " most recent logs:\n")
-
-	totalLogs = len(LOGS)
 
 	print(u"\u001b[37m  ID    Discipline    Project             Start               End\u001b[0m") # This is a catastrophically bad way of doing it
 
@@ -57,15 +65,48 @@ def List(verbose = False):
 		print("  " + line)
 	print(" ")
 
+def Edit(logID = None, attribute = None, newValue = None):
+	logToEdit = LOGS[int(logID)]
 
-def Maintenance(args):
-	if PREFLIGHTS == False:
-		return
+	if attribute in SYN_DISC:
+		logToEdit['DISC'] = newValue
+		ApplyEdit(logID, logToEdit)
 
-	verbose = False
+	elif attribute in SYN_PROJ:
+		logToEdit['PROJ'] = newValue
+		ApplyEdit(logID, logToEdit)
 
-	if 'verbose' in args:
-		verbose = True
+	elif attribute in SYN_TIME_START:
+		try:
+			dt = datetime.strptime(str(newValue), '%y/%m/%d %H:%M')
+			ms = int(time.mktime(dt.timetuple()) * 1000)
+			logToEdit['TIME_START'] = ms
+			logToEdit['TIME_LENGTH'] = int((logToEdit['TIME_END'] - ms) / 1000)
+			ApplyEdit(logID, logToEdit)
+		except Exception as e:
+			print("Start time could not be edited.\nError: " + str(e))
 
-	if 'list' in args:
-		PrintRecentLogs(verbose)
+	elif attribute in SYN_TIME_END:
+		try:
+			dt = datetime.strptime(str(newValue), '%y/%m/%d %H:%M')
+			ms = int(time.mktime(dt.timetuple()) * 1000)
+			logToEdit['TIME_END'] = ms
+			logToEdit['TIME_LENGTH'] = int((ms - logToEdit['TIME_START']) / 1000)
+			ApplyEdit(logID, logToEdit)
+		except Exception as e:
+			print("End time could not be edited.\nError: " + str(e))
+
+	else:
+		print("Attribute not recognised.")
+
+def ApplyEdit(logID, newValue):
+	LOGS[int(logID)] = newValue
+
+	try:
+		# Write logs to logs file
+		with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), 'w') as LOGS_FILE:
+			LOGS_FILE.write(json.dumps(LOGS, indent=4))
+
+		print("Log edited.")
+	except Exception as e:
+		print("Unable to update logs file.\nError: " + str(e))

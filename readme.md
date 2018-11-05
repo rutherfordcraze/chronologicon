@@ -38,7 +38,7 @@ directory <dir>   Change the save directory
 The first time you use Chronologicon, you'll need to specify a save directory with the `directory` command.
 
 
-## Usage
+## Example Usage
 
 `$ chron directory ~/Documents/Chron` Change the save directory to a folder on your computer.
 
@@ -59,6 +59,12 @@ verbose      Show additional projects
 uniform      Display project graphs as full width
 refresh      Force recalculate stats
 ```
+
+Example usage:
+
+`$ chron stats uniform verbose`
+
+`$ chron stats refresh`
 
 
 ## Synonyms

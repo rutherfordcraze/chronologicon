@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Chronologicon v4.x
@@ -20,6 +20,10 @@ class colors:
 	GREY = u"\u001b[37m"
 	RESET = u"\u001b[0m"
 	DEBUG = u"\u001b[35m"
+
+class bars:
+	SINGLE = u"\u2588"
+	DOUBLE = u"\u2590\u258C"
 
 def GetDbt(byProject = None, graphWidth = BAR_WIDTH):
 	global MVP_DISC
@@ -46,19 +50,19 @@ def GetDbt(byProject = None, graphWidth = BAR_WIDTH):
 			R += bar
 
 			if MVP_DISC[0] == k:
-				dbtGraph += (bar * u"\u2588")
+				dbtGraph += (bar * bars.SINGLE)
 				dbtKey += str(k) + "  "
 			elif len(MVP_DISC) > 1 and MVP_DISC[1] == k:
-				dbtGraph += colors.RED + (bar * u"\u2588") + colors.RESET
+				dbtGraph += colors.RED + (bar * bars.SINGLE) + colors.RESET
 				dbtKey += colors.RED + str(k) + colors.RESET + "  "
 			elif len(MVP_DISC) > 2 and MVP_DISC[2] == k:
-				dbtGraph += colors.BLUE + (bar * u"\u2588") + colors.RESET
+				dbtGraph += colors.BLUE + (bar * bars.SINGLE) + colors.RESET
 				dbtKey += colors.BLUE + str(k) + colors.RESET + "  "
 			else:
 				R -= bar # Ignore 'other' stuff for now, put it at the end
 
 	if R < graphWidth:
-		dbtGraph += colors.GREY + ((graphWidth - R) * u"\u2588") + colors.RESET
+		dbtGraph += colors.GREY + ((graphWidth - R) * bars.SINGLE) + colors.RESET
 		dbtKey += colors.GREY + "other" + colors.RESET
 
 	return (dbtGraph, dbtKey)
@@ -86,7 +90,7 @@ def GetWbh():
 			wbhGraph += "\n  | "
 		for col in range(len(wbhClamped)):
 			if wbhClamped[col] >= height - row:
-				wbhGraph += u"\u2590\u258C"
+				wbhGraph += bars.DOUBLE
 			else:
 				wbhGraph += "  "
 
@@ -129,7 +133,7 @@ def GetPbt(verbose = False, uniform = False):
 			dbtGraph, dbtKey = GetDbt(k, pBarWidth)
 
 			pbtList += dbtGraph + "\n"
-			pbtList += "  " + str(k) + (spacer * ' ') + str(v / 60 / 60) + " h\n\n"
+			pbtList += "  " + str(k) + (spacer * ' ') + str(int(v / 60 / 60)) + " h\n\n"
 
 	return pbtList
 
@@ -179,13 +183,13 @@ def ViewStats(args):
 	print(AvgEntry)
 
 	print('\n  Work by discipline\n')
-	print(dbtGraph.encode('utf-8'))
+	print(dbtGraph)
 	print(dbtKey)
 
 	print('\n\n  Work by hour')
-	print(wbhGraph.encode('utf-8'))
+	print(wbhGraph)
 	print('  | ' + (BAR_WIDTH - 2) * '─')
 	print(wbhKey)
 
 	print('\n\n  Largest projects\n')
-	print(pbtList.encode('utf-8'))
+	print(pbtList)

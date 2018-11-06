@@ -1,7 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import chronologicon, chronologicon.output, chronologicon.maintenance, sys
 py3 = sys.version_info[0] > 2
+
+if not py3:
+	print("You are running Chronologicon on python v" + str(sys.version_info[0]) + "." + str(sys.version_info[0]) + "\nPlease be aware that, while it may run with no issues, it is not extensively tested with this version.")
 
 HELP_TEXT = """
 Usage:
@@ -45,6 +49,25 @@ HELP_COMMANDS = ['help', 'h', '--help', '-h']
 if len(sys.argv) > 1:
 	mainCommand = sys.argv[1] #sys.argv[0] is the name of the script
 	options = sys.argv[2:]
+	preflightsPassed = True
+
+	if mainCommand in DIRECTORY_COMMANDS:
+		# Change directory to the one provided, or if none is provided, ask for one
+		if len(options) > 0:
+			chronologicon.ChangeSaveDir(options[0])
+		else:
+			if py3:
+				response = input("New save directory: ")
+			else:
+				response = raw_input("New save directory: ")
+
+			chronologicon.ChangeSaveDir(response)
+
+		preflightsPassed = chronologicon.Preflights()
+		exit()
+	else:
+		if chronologicon.Preflights() is False:
+			exit()
 
 	# Logging and entry
 	if mainCommand in START_COMMANDS:
@@ -81,18 +104,6 @@ if len(sys.argv) > 1:
 		else:
 			chronologicon.maintenance.List()
 
-	elif mainCommand in DIRECTORY_COMMANDS:
-		# Change directory to the one provided, or if none is provided, ask for one
-		if len(options) > 0:
-			chronologicon.ChangeSaveDir(options[0])
-		else:
-			if py3:
-				response = input("New save directory: ")
-			else:
-				response = raw_input("New save directory: ")
-
-			chronologicon.ChangeSaveDir(response)
-
 	elif mainCommand in EDIT_COMMANDS:
 		if len(options) > 2:
 			chronologicon.maintenance.Edit(options[0], options[1], options[2])
@@ -107,4 +118,4 @@ if len(sys.argv) > 1:
 		print("Command not recognised.")
 
 else:
-	print("Not enough arguments.")
+	print("Not enough arguments.\n" + HELP_TEXT)

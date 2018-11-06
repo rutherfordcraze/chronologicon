@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Chronologicon v4.x
@@ -12,7 +12,6 @@ from datetime import datetime
 PREFS = chronologicon.PREFS
 LOGS_FILENAME = chronologicon.LOGS_FILENAME
 LOGS = chronologicon.LoadLogs()
-PREFLIGHTS = True # False == Fail
 
 SYN_DISC = ['discipline', 'disc', 'sector']
 SYN_PROJ = ['project', 'proj']
@@ -20,13 +19,13 @@ SYN_PROJ = ['project', 'proj']
 SYN_TIME_START = ['start', 'start_time', 'time_start']
 SYN_TIME_END = ['end', 'end_time', 'time_end']
 
-if LOGS == False:
-	print("Unable to load file: " + LOGS_FILENAME + ". Please ensure it exists.")
-	PREFLIGHTS = False
-
 def List(verbose = False):
 	qty = 10
 	columnTabs = [6, 20, 40, 60]
+
+	if LOGS == False:
+		print("Unable to load file: " + LOGS_FILENAME + ". Please ensure it exists.")
+		return
 
 	totalLogs = len(LOGS)
 

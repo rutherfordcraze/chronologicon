@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 # Chronologicon v4.x
 # Rutherford Craze
@@ -40,63 +41,64 @@ PREFS = EasySettings(os.path.join(CUR_FILEPATH, 'prefs.conf'))
 
 # --CORE-FUNCTIONS----------------------------------
 
-# Any mission-critical components should be checked/ created before starting
-def Preflights(directoryInput):
-	# Preferences file checks
+def Preflights(): # Check any mission-critical files and create missing ones.
 	global PREFS
-	if directoryInput is None:
-		if PREFS.has_option('SAVE_DIR'):
+
+	# Check save directory
+	if PREFS.has_option('SAVE_DIR'):
+		if os.path.isdir(PREFS.get('SAVE_DIR')):
 			None
 		else:
-			print("Please use the -d command to specify a save directory.")
+			print("Save directory couldn't be verified. Please use the '$ chron directory' command to set a new one.")
 			return False
 	else:
-		if os.path.exists(directoryInput[0]):
-			ChangeSaveDir(directoryInput[0])
-		else:
-			print("Creating directory...")
-			try:
-				os.makedirs(directoryInput[0])
-				ChangeSaveDir(directoryInput[0])
-			except Exception as e:
-				print("Unable to create new save directory.\nError: " + str(e))
-				return False
+		print("No save directory specified. Please use the '$ chron directory' command to set one.")
+		return False
 
-	# Check if log file exists; create it (and its parent folder) if it doesn't
-	try:
-		with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), 'r') as LOGS_FILE:
-			return True
-	except:
+	# Check logs file
+	if os.path.exists(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME)):
+		None
+	else:
 		print("Creating logs file...")
 		try:
 			# os.makedirs(os.path.dirname(LOGS_FILENAME), exist_ok=True)
 			with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), "w") as LOGS_FILE:
 				LOGS_FILE.write(json.dumps(LOGS_DEFAULT))
-			print("Done.")
-			return True
 		except Exception as e:
 			print("Unable to create log file. Please check your install.\nError: " + str(e))
 			return False
 
-	# Check if presave file exists; create it if it doesn't
-	try:
-		with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME), 'r') as PRESAVE_FILE:
-			return True
-	except:
+	# Check stats file
+	if os.path.exists(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME)):
+		None
+	else:
+		print("Creating stats file...")
+		try:
+			# os.makedirs(os.path.dirname(LOGS_FILENAME), exist_ok=True)
+			with open(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME), "w") as STATS_FILE:
+				None
+		except Exception as e:
+			print("Unable to create stats file. Please check your install.\nError: " + str(e))
+			return False
+
+	# Check temp file
+	if os.path.exists(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME)):
+		None
+	else:
 		print("Creating temporary save file...")
 		try:
 			with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME), "w") as PRESAVE_FILE:
-				PRESAVE_FILE.write("")
-			print("Done.")
-			return True
+				None
 		except Exception as e:
 			print("Unable to create temporary save file. Please check your install.\nError: " + str(e))
 			return False
 
+	return True
+
 
 def ChangeSaveDir(newSaveDir):
 	global PREFS
-	PREFS.setsave('SAVE_DIR', newSaveDir)
+	PREFS.setsave('SAVE_DIR', os.path.expanduser(newSaveDir))
 	print("Save directory updated.")
 
 

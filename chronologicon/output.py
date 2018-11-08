@@ -51,19 +51,19 @@ def GetDbt(byProject = None, graphWidth = BAR_WIDTH):
 
 			if MVP_DISC[0] == k:
 				dbtGraph += (bar * bars.SINGLE)
-				dbtKey += str(k) + "  "
+				dbtKey += str(k).capitalize() + "  "
 			elif len(MVP_DISC) > 1 and MVP_DISC[1] == k:
 				dbtGraph += colors.RED + (bar * bars.SINGLE) + colors.RESET
-				dbtKey += colors.RED + str(k) + colors.RESET + "  "
+				dbtKey += colors.RED + str(k).capitalize() + colors.RESET + "  "
 			elif len(MVP_DISC) > 2 and MVP_DISC[2] == k:
 				dbtGraph += colors.BLUE + (bar * bars.SINGLE) + colors.RESET
-				dbtKey += colors.BLUE + str(k) + colors.RESET + "  "
+				dbtKey += colors.BLUE + str(k).capitalize() + colors.RESET + "  "
 			else:
 				R -= bar # Ignore 'other' stuff for now, put it at the end
 
 	if R < graphWidth:
 		dbtGraph += colors.GREY + ((graphWidth - R) * bars.SINGLE) + colors.RESET
-		dbtKey += colors.GREY + "other" + colors.RESET
+		dbtKey += colors.GREY + "Other" + colors.RESET
 
 	return (dbtGraph, dbtKey)
 
@@ -133,7 +133,7 @@ def GetPbt(verbose = False, uniform = False):
 			dbtGraph, dbtKey = GetDbt(k, pBarWidth)
 
 			pbtList += dbtGraph + "\n"
-			pbtList += "  " + str(k) + (spacer * ' ') + str(int(v / 60 / 60)) + " h\n\n"
+			pbtList += "  " + str(k).capitalize() + (spacer * ' ') + str(int(v / 60 / 60)) + " h\n\n"
 
 	return pbtList
 
@@ -182,14 +182,14 @@ def ViewStats(args):
 	print(TotalTime)
 	print(AvgEntry)
 
-	print('\n  Work by discipline\n')
+	print('\n  Work by Discipline\n')
 	print(dbtGraph)
 	print(dbtKey)
 
-	print('\n\n  Work by hour')
+	print('\n\n  Work by Hour')
 	print(wbhGraph)
 	print('  | ' + (BAR_WIDTH - 2) * '─')
 	print(wbhKey)
 
-	print('\n\n  Largest projects\n')
+	print('\n\n  Largest Projects\n')
 	print(pbtList)

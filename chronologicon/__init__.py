@@ -124,8 +124,8 @@ def StartLog(args):
 		try:
 			with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME), 'w+') as PRESAVE_FILE:
 				PRESAVE_FILE.write(json.dumps(CUR_LOG))
-		except:
-			print("Unable to start log.")
+		except Exception as  e:
+			print("Unable to start log.\nError: " + str(e))
 			return
 
 		print("Started new log with discipline '" + CUR_LOG['DISC'] + "' and project '" + CUR_LOG['PROJ'] + "'.")
@@ -216,14 +216,19 @@ def SaveStats():
 				CUR_STATS['projbydisc'][thisLog['PROJ']][thisLog['DISC']] = CUR_STATS['projbydisc'][thisLog['PROJ']].get(thisLog['DISC'], 0) + thisLog['TIME_LENGTH']
 
 				# Productivity by hour
-				logHour = time.strftime("%H", time.localtime(thisLog['TIME_START']/1000))
-				CUR_STATS['workbyhour'][logHour] = CUR_STATS['workbyhour'].get(logHour, 0) + 1
+				if thisLog['TIME_LENGTH'] < 3601: # Simple entry for single-hour logs
+					logHour = time.strftime("%H", time.localtime(thisLog['TIME_START']/1000))
+					CUR_STATS['workbyhour'][logHour] = CUR_STATS['workbyhour'].get(logHour, 0) + 1
+				else:
+					for h in range((thisLog['TIME_LENGTH'] // 3600) + 1): # For multi-hour logs, log all hours covered
+						logHour = time.strftime("%H", time.localtime((thisLog['TIME_START'] + (3600000 * h))/1000))
+						CUR_STATS['workbyhour'][logHour] = CUR_STATS['workbyhour'].get(logHour, 0) + 1
 
 		# Write statistics to stats file
 		with open(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME), 'w') as STATS_FILE:
-			STATS_FILE.write('[' + json.dumps(CUR_STATS, indent=4) + ']')
-	except:
-		print("Unable to update statistics file.")
+			STATS_FILE.write('[' + json.dumps(CUR_STATS, indent=4).lower() + ']')
+	except Exception as e:
+		print("Unable to update statistics file.\nError: " + str(e))
 
 def LoadStats():
 	try:
@@ -259,7 +264,7 @@ def Export(location):
 				EXPORT_FILE.write(LOGS_FILE.read())
 		print("Data file exported.")
 	except:
-		print("Unable to export data.")
+		print("Unable to export data.\nError: " + str(e))
 
 	try:
 		with open(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME)) as STATS_FILE:
@@ -267,4 +272,4 @@ def Export(location):
 				EXPORT_FILE.write(STATS_FILE.read())
 		print("Stats file exported.")
 	except:
-		print("Unable to export stats.")
+		print("Unable to export stats.\nError: " + str(e))

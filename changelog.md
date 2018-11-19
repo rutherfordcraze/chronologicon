@@ -1,3 +1,7 @@
+## 4.74
+
+— Began centralising output messages in strings.py.
+
 ## 4.73
 
 — All error messages now include exception info.

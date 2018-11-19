@@ -2,29 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import chronologicon, chronologicon.output, chronologicon.maintenance, sys
+from chronologicon.strings import Message
 py3 = sys.version_info[0] > 2
 
 if not py3:
-	print("You are running Chronologicon on python v" + str(sys.version_info[0]) + "." + str(sys.version_info[0]) + "\nPlease be aware that, while it may run with no issues, it is not extensively tested with this version.")
-
-HELP_TEXT = """
-Usage:
-  chron <command> <options>
-
-Commands:
-  start <options>         Start a new log timer.
-  stop                    Complete the current log.
-  status                  Check whether a log is in progress.
-  cancel                  Abort the current entry.
-  stats <options>         View stats & graphs.
-  list                    Show the 10 most recent logs.
-  backup                  Backup the log data file.
-  edit <options>          Edit an attribute of a specific log.
-  directory <options>     Change the save directory.
-
-For detailed usage:
-  https://github.com/rutherfordcraze/chronologicon
-"""
+	Message('chronOldPythonVersion')
 
 # Logging and entry
 START_COMMANDS = ['start', 'begin', 's', '-s']
@@ -43,6 +25,9 @@ DIRECTORY_COMMANDS = ['directory', 'd', '-d']
 
 # Help
 HELP_COMMANDS = ['help', 'h', '--help', '-h']
+
+# Test
+TEST_COMMANDS = ['test']
 
 # --------------------------------------------------
 
@@ -85,7 +70,7 @@ if len(sys.argv) > 1:
 		if response == 'y':
 			chronologicon.CancelLog()
 		else:
-			print("Log not cancelled.")
+			Message('chronLogAbortCancelled')
 
 	elif mainCommand in STATUS_COMMANDS:
 		chronologicon.Status()
@@ -108,14 +93,17 @@ if len(sys.argv) > 1:
 		if len(options) > 2:
 			chronologicon.maintenance.Edit(options[0], options[1], options[2])
 		else:
-			print("Unexpected input. Usage:\n$ chron edit <logID> <attribute> <newValue>")
+			Message('chronMaintenanceInputInvalid')
 
 	# Help
 	elif mainCommand in HELP_COMMANDS:
-		print(HELP_TEXT)
+		Message('chronHelp')
+
+	elif mainCommand in TEST_COMMANDS:
+		Message('cTestMessage')
 
 	else:
-		print("Command not recognised.")
+		Message('chronUnrecognisedCommand')
 
 else:
-	print("Not enough arguments.\n" + HELP_TEXT)
+	Message('chronNotEnoughArguments')

@@ -1,3 +1,7 @@
+## 4.75
+
+— Centralised maintenance messages in strings.py
+
 ## 4.74
 
 — Began centralising output messages in strings.py.

@@ -8,6 +8,7 @@
 
 import chronologicon, time, os, json
 from datetime import datetime
+from  chronologicon.strings import *
 
 PREFS = chronologicon.PREFS
 LOGS_FILENAME = chronologicon.LOGS_FILENAME
@@ -24,16 +25,16 @@ def List(verbose = False):
 	columnTabs = [6, 20, 40, 60]
 
 	if LOGS == False:
-		print("Unable to load file: " + LOGS_FILENAME + ". Please ensure it exists.")
+		Message('maintLogsFileNotFound','',LOGS_FILENAME)
 		return
 
 	totalLogs = len(LOGS)
 
 	if totalLogs < qty or verbose:
-		print("\n  Displaying all logs:\n")
+		Message('maintAllLogsTitle')
 		qty = totalLogs
 	else:
-		print("\n  Displaying " + str(qty) + " most recent logs:\n")
+		Message('maintRecentLogsTitle', '', qty)
 
 	print(u"\u001b[37m  ID    Discipline    Project             Start               End\u001b[0m") # This is a catastrophically bad way of doing it
 
@@ -83,7 +84,7 @@ def Edit(logID = None, attribute = None, newValue = None):
 			logToEdit['TIME_LENGTH'] = int((logToEdit['TIME_END'] - ms) / 1000)
 			ApplyEdit(logID, logToEdit)
 		except Exception as e:
-			print("Start time could not be edited.\nError: " + str(e))
+			Message('maintStartEditFailed', e)
 
 	elif attribute in SYN_TIME_END:
 		try:
@@ -93,10 +94,10 @@ def Edit(logID = None, attribute = None, newValue = None):
 			logToEdit['TIME_LENGTH'] = int((ms - logToEdit['TIME_START']) / 1000)
 			ApplyEdit(logID, logToEdit)
 		except Exception as e:
-			print("End time could not be edited.\nError: " + str(e))
+			Message('maintStartEditFailed', e)
 
 	else:
-		print("Attribute not recognised.")
+		Message('maintUnrecognisedAttribute')
 
 def ApplyEdit(logID, newValue):
 	LOGS[int(logID)] = newValue
@@ -106,6 +107,6 @@ def ApplyEdit(logID, newValue):
 		with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), 'w') as LOGS_FILE:
 			LOGS_FILE.write(json.dumps(LOGS, indent=4))
 
-		print("Log edited.")
+		Message('maintEditSuccess')
 	except Exception as e:
-		print("Unable to update logs file.\nError: " + str(e))
+		Message('maintEditFailure', e)

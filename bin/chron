@@ -6,7 +6,7 @@ from chronologicon.strings import Message
 py3 = sys.version_info[0] > 2
 
 if not py3:
-	Message('chronOldPythonVersion')
+	Message('chronOldPythonVersion','',str(sys.version_info[0]) + "." + str(sys.version_info[1]))
 
 # Logging and entry
 START_COMMANDS = ['start', 'begin', 's', '-s']

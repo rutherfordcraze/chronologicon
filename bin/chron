@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import chronologicon, chronologicon.output, chronologicon.maintenance, sys
-from chronologicon.strings import Message
-py3 = sys.version_info[0] > 2
+# standard lib
+import sys
 
+# chronologicon
+import chronologicon, chronologicon.output, chronologicon.maintenance
+from chronologicon.strings import Message
+
+
+py3 = sys.version_info[0] > 2
 if not py3:
 	Message('chronOldPythonVersion','',str(sys.version_info[0]) + "." + str(sys.version_info[1]))
 

@@ -76,6 +76,7 @@ Some commands have synonyms, which you can use if you prefer. Some are actual sy
 start       s, -s, begin
 stop        x, -x, end
 cancel      abort
+list        ls
 stats       v, -v, graphs
 backup      b, -b
 directory   d, -d

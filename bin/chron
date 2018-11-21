@@ -19,7 +19,7 @@ STATS_COMMANDS = ['stats', 'graphs', 'v', '-v']
 
 # Maintenance
 BACKUP_COMMANDS = ['backup', 'b', '-b']
-LIST_COMMANDS = ['list']
+LIST_COMMANDS = ['list', 'ls']
 EDIT_COMMANDS = ['edit']
 DIRECTORY_COMMANDS = ['directory', 'd', '-d']
 

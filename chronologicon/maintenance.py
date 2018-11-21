@@ -6,9 +6,14 @@
 # https://craze.co.uk
 # 181103
 
-import chronologicon, time, os, json
+import os
+import time
+import json
 from datetime import datetime
-from  chronologicon.strings import *
+
+import chronologicon
+from chronologicon.strings import Message
+
 
 PREFS = chronologicon.PREFS
 LOGS_FILENAME = chronologicon.LOGS_FILENAME
@@ -20,99 +25,105 @@ SYN_PROJ = ['project', 'proj']
 SYN_TIME_START = ['start', 'start_time', 'time_start']
 SYN_TIME_END = ['end', 'end_time', 'time_end']
 
-def List(verbose = False):
-	qty = 10
-	columnTabs = [6, 20, 40, 60]
 
-	if LOGS == False:
-		Message('maintLogsFileNotFound','',LOGS_FILENAME)
-		return
+def List(verbose=False):
+    qty = 10
+    columnTabs = [6, 20, 40, 60]
 
-	totalLogs = len(LOGS)
+    if not LOGS:
+        Message('maintLogsFileNotFound', '', LOGS_FILENAME)
+        return
 
-	if totalLogs < qty or verbose:
-		Message('maintAllLogsTitle')
-		qty = totalLogs
-	else:
-		Message('maintRecentLogsTitle', '', qty)
+    totalLogs = len(LOGS)
 
-	print(u"\u001b[37m  ID    Discipline    Project             Start               End\u001b[0m") # This is a catastrophically bad way of doing it
+    if verbose or totalLogs < qty:
+        Message('maintAllLogsTitle')
+        qty = totalLogs
+    else:
+        Message('maintRecentLogsTitle', '', qty)
 
-	for i in range(qty):
-		logID = totalLogs - 1 - i
-		line = str(logID) + "  "
+    # This is a catastrophically bad way of doing it
+    print(u"\u001b[37m  ID    Discipline    Project             Start               End\u001b[0m")
 
-		if len(line) < columnTabs[0]:
-			line += " " * (columnTabs[0] - len(line))
+    for i in range(qty):
+        logID = totalLogs - 1 - i
+        line = str(logID) + "  "
 
-		line += LOGS[logID]['DISC'] + "  "
+        if len(line) < columnTabs[0]:
+            line += " " * (columnTabs[0] - len(line))
 
-		if len(line) < columnTabs[1]:
-			line += " " * (columnTabs[1] - len(line))
+        line += LOGS[logID]['DISC'] + "  "
 
-		line += LOGS[totalLogs - 1 - i]['PROJ']
+        if len(line) < columnTabs[1]:
+            line += " " * (columnTabs[1] - len(line))
 
-		if len(line) < columnTabs[2]:
-			line += " " * (columnTabs[2] - len(line))
+        line += LOGS[totalLogs - 1 - i]['PROJ']
 
-		line += time.strftime("%y/%m/%d %H:%M", time.localtime(LOGS[logID]['TIME_START']/1000))
+        if len(line) < columnTabs[2]:
+            line += " " * (columnTabs[2] - len(line))
 
-		if len(line) < columnTabs[3]:
-			line += " " * (columnTabs[3] - len(line))
+        line += time.strftime("%y/%m/%d %H:%M", time.localtime(LOGS[logID]['TIME_START'] / 1000))
 
-		line += time.strftime("%y/%m/%d %H:%M", time.localtime(LOGS[logID]['TIME_END']/1000))
+        if len(line) < columnTabs[3]:
+            line += " " * (columnTabs[3] - len(line))
 
-		print("  " + line)
-	print(" ")
+        line += time.strftime("%y/%m/%d %H:%M", time.localtime(LOGS[logID]['TIME_END'] / 1000))
 
-def Edit(logID = None, attribute = None, newValue = None):
-	logToEdit = LOGS[int(logID)]
+        print("  " + line)
+    print(" ")
 
-	if attribute in SYN_DISC:
-		logToEdit['DISC'] = newValue
-		ApplyEdit(logID, logToEdit)
 
-	elif attribute in SYN_PROJ:
-		logToEdit['PROJ'] = newValue
-		ApplyEdit(logID, logToEdit)
+def Edit(logID=None, attribute=None, newValue=None):
+    logToEdit = LOGS[int(logID)]
 
-	elif attribute in SYN_TIME_START:
-		try:
-			dt = datetime.strptime(str(newValue), '%y/%m/%d %H:%M')
-			ms = int(time.mktime(dt.timetuple()) * 1000)
-			logToEdit['TIME_START'] = ms
-			logToEdit['TIME_LENGTH'] = int((logToEdit['TIME_END'] - ms) / 1000)
-			ApplyEdit(logID, logToEdit)
-		except Exception as e:
-			Message('maintStartEditFailed', e)
+    if attribute in SYN_DISC:
+        logToEdit['DISC'] = newValue
+        ApplyEdit(logID, logToEdit)
 
-	elif attribute in SYN_TIME_END:
-		try:
-			dt = datetime.strptime(str(newValue), '%y/%m/%d %H:%M')
-			ms = int(time.mktime(dt.timetuple()) * 1000)
-			logToEdit['TIME_END'] = ms
-			logToEdit['TIME_LENGTH'] = int((ms - logToEdit['TIME_START']) / 1000)
-			ApplyEdit(logID, logToEdit)
-		except Exception as e:
-			Message('maintStartEditFailed', e)
+    elif attribute in SYN_PROJ:
+        logToEdit['PROJ'] = newValue
+        ApplyEdit(logID, logToEdit)
 
-	else:
-		Message('maintUnrecognisedAttribute')
+    elif attribute in SYN_TIME_START:
+        try:
+            dt = datetime.strptime(str(newValue), '%y/%m/%d %H:%M')
+            ms = int(time.mktime(dt.timetuple()) * 1000)
+            logToEdit['TIME_START'] = ms
+            logToEdit['TIME_LENGTH'] = int((logToEdit['TIME_END'] - ms) / 1000)
+            ApplyEdit(logID, logToEdit)
+        except Exception as e:
+            Message('maintStartEditFailed', e)
+
+    elif attribute in SYN_TIME_END:
+        try:
+            dt = datetime.strptime(str(newValue), '%y/%m/%d %H:%M')
+            ms = int(time.mktime(dt.timetuple()) * 1000)
+            logToEdit['TIME_END'] = ms
+            logToEdit['TIME_LENGTH'] = int((ms - logToEdit['TIME_START']) / 1000)
+            ApplyEdit(logID, logToEdit)
+        except Exception as e:
+            Message('maintStartEditFailed', e)
+
+    else:
+        Message('maintUnrecognisedAttribute')
+
 
 def ApplyEdit(logID, newValue):
-	LOGS[int(logID)] = newValue
-	PersistLogs()
+    LOGS[int(logID)] = newValue
+    PersistLogs()
 
-def Remove(logID = None):
-	del LOGS[int(logID)]
-	PersistLogs()
+
+def Remove(logID=None):
+    del LOGS[int(logID)]
+    PersistLogs()
+
 
 def PersistLogs():
-	try:
-		# Write logs to logs file
-		with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), 'w') as LOGS_FILE:
-			LOGS_FILE.write(json.dumps(LOGS, indent=4))
+    try:
+        # Write logs to logs file
+        with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), 'w') as LOGS_FILE:
+            LOGS_FILE.write(json.dumps(LOGS, indent=4))
 
-		Message('maintEditSuccess')
-	except Exception as e:
-		Message('maintEditFailure', e)
+        Message('maintEditSuccess')
+    except Exception as e:
+        Message('maintEditFailure', e)

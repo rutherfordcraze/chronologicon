@@ -19,6 +19,7 @@ Commands:
 	list										Show the 10 most recent logs.
 	backup									Backup the log data file.
 	edit <options>					Edit an attribute of a specific log.
+	remove <options>			 Remove a specific log entry.
 	directory <options>		 Change the save directory.
 
 For detailed usage:
@@ -29,7 +30,8 @@ STRINGS = {
 	'cTestMessage':									'Chron Test Message',
 	'chronHelp':										HELP_TEXT,
 	'chronLogAbortCancelled':				'Log not cancelled.',
-	'chronMaintenanceInputInvalid':	'Unexpected input. Usage:\n$ chron edit <logID> <attribute> <newValue>',
+	'chronEditInputInvalid':				'Unexpected input. Usage:\n$ chron edit <logID> <attribute> <newValue>',
+	'chronRemoveInputInvalid':			'Unexpected input. Usage:\n$ chron remove <logID>',
 	'chronUnrecognisedCommand':			'Command not recognised.',
 	'chronNotEnoughArguments':			'Not enough arguments.\n' + HELP_TEXT,
 	'chronOldPythonVersion':				'You are running Chronologicon on python #x. This version will not be supported in future.',

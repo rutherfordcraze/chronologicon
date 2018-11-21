@@ -26,6 +26,7 @@ STATS_COMMANDS = ['stats', 'graphs', 'v', '-v']
 BACKUP_COMMANDS = ['backup', 'b', '-b']
 LIST_COMMANDS = ['list', 'ls']
 EDIT_COMMANDS = ['edit']
+REMOVE_COMMANDS = ['remove', 'delete', 'rm', 'del']
 DIRECTORY_COMMANDS = ['directory', 'd', '-d']
 
 # Help
@@ -99,6 +100,12 @@ if len(sys.argv) > 1:
 			chronologicon.maintenance.Edit(options[0], options[1], options[2])
 		else:
 			Message('chronMaintenanceInputInvalid')
+
+	elif mainCommand in REMOVE_COMMANDS:
+		if len(options) > 0:
+			chronologicon.maintenance.Remove(options[0])
+		else:
+			Message('chronRemoveInputInvalid')
 
 	# Help
 	elif mainCommand in HELP_COMMANDS:

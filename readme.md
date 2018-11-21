@@ -33,6 +33,7 @@ stats <args>      View stats & graphs
 list              Show the 10 most recent logs
 backup            Backup the log data file
 edit <args>       Edit an attribute of a specific log
+remove <id>       Remove a specific log entry
 directory <dir>   Change the save directory
 ```
 
@@ -48,7 +49,6 @@ Create a new log with discipline, project, and (optionally) a note.
 
 `$ chron stop`
 Stop tracking and save the current log.
-
 
 
 ## Stats
@@ -77,6 +77,7 @@ start       s, -s, begin
 stop        x, -x, end
 cancel      abort
 list        ls
+remove      rm, delete, del
 stats       v, -v, graphs
 backup      b, -b
 directory   d, -d
@@ -85,9 +86,16 @@ directory   d, -d
 
 ## Editing
 
-Editing of previous logs is a new and largely untested feature. Make sure your logs file is backed up.
+> __WARNING!__  
+> Edition and removal of previous logs is a new and largely untested feature.  
+> Make sure your logs file is backed up.
 
-Usage: `$ chron edit <logID> <attribute> <newValue>`
-Example: `$ chron edit 204 discipline 'music'`
-
-To view the IDs of your 10 most recent logs, you can use `$ chron list`. To view the ID of every log, use `$ chron list verbose`.
+- __Listing entries__:
+  - `$ chron list`: view the IDs of your 10 most recent logs.
+  - `$ chron list verbose`: view the ID of every log.
+- __Modifying attributes__:
+  - `$ chron edit <logID> <attribute> <newValue>`
+  - Example: `$ chron edit 204 discipline 'music'`
+- __Removing entries__:
+  - `$ chron remove <logID>`  
+  - Example: `$ chron remove 42`

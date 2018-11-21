@@ -111,4 +111,4 @@ if len(sys.argv) > 1:
 		Message('chronUnrecognisedCommand')
 
 else:
-	Message('chronNotEnoughArguments')
+	chronologicon.Status()

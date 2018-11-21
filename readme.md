@@ -97,5 +97,5 @@ directory   d, -d
   - `$ chron edit <logID> <attribute> <newValue>`
   - Example: `$ chron edit 204 discipline 'music'`
 - __Removing entries__:
-  - `$ chron remove <logID>`  
+  - `$ chron remove <logID>`
   - Example: `$ chron remove 42`

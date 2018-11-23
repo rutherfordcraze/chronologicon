@@ -10,8 +10,9 @@ __pycache__/
 # Python egg metadata, regenerated from source files by setuptools.
 /*.egg-info
 
-# Preferences file
+# Chronologicon user data
 prefs.conf
+temp.json
 
 # Development scratchpad
 notes.txt

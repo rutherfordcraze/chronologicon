@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import chronologicon, chronologicon.output, chronologicon.maintenance, sys
+import chronologicon, chronologicon.input, chronologicon.output, chronologicon.maintenance, sys
 from chronologicon.strings import Message
 py3 = sys.version_info[0] > 2
 
@@ -26,9 +26,6 @@ DIRECTORY_COMMANDS = ['directory', 'd', '-d']
 # Help
 HELP_COMMANDS = ['help', 'h', '--help', '-h']
 
-# Test
-TEST_COMMANDS = ['test']
-
 # --------------------------------------------------
 
 if len(sys.argv) > 1:
@@ -39,14 +36,14 @@ if len(sys.argv) > 1:
 	if mainCommand in DIRECTORY_COMMANDS:
 		# Change directory to the one provided, or if none is provided, ask for one
 		if len(options) > 0:
-			chronologicon.ChangeSaveDir(options[0])
+			chronologicon.input.ChangeSaveDir(options[0])
 		else:
 			if py3:
 				response = input("New save directory: ")
 			else:
 				response = raw_input("New save directory: ")
 
-			chronologicon.ChangeSaveDir(response)
+			chronologicon.input.ChangeSaveDir(response)
 
 		preflightsPassed = chronologicon.Preflights()
 		exit()
@@ -56,10 +53,10 @@ if len(sys.argv) > 1:
 
 	# Logging and entry
 	if mainCommand in START_COMMANDS:
-		chronologicon.StartLog(options)
+		chronologicon.input.StartLog(options)
 
 	elif mainCommand in STOP_COMMANDS:
-		chronologicon.StopLog()
+		chronologicon.input.StopLog()
 
 	elif mainCommand in ABORT_COMMANDS:
 		if py3:
@@ -68,12 +65,12 @@ if len(sys.argv) > 1:
 			response = raw_input("Cancel the log in progress? (y/n): ")
 
 		if response == 'y':
-			chronologicon.CancelLog()
+			chronologicon.input.CancelLog()
 		else:
 			Message('chronLogAbortCancelled')
 
 	elif mainCommand in STATUS_COMMANDS:
-		chronologicon.Status()
+		chronologicon.input.Status()
 
 	# Stats and graphs
 	elif mainCommand in STATS_COMMANDS:
@@ -81,7 +78,7 @@ if len(sys.argv) > 1:
 
 	# Maintenance
 	elif mainCommand in BACKUP_COMMANDS:
-		chronologicon.Backup()
+		chronologicon.input.Backup()
 
 	elif mainCommand in LIST_COMMANDS:
 		if 'verbose' in options:
@@ -98,9 +95,6 @@ if len(sys.argv) > 1:
 	# Help
 	elif mainCommand in HELP_COMMANDS:
 		Message('chronHelp')
-
-	elif mainCommand in TEST_COMMANDS:
-		Message('cTestMessage')
 
 	else:
 		Message('chronUnrecognisedCommand')

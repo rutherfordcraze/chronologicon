@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Chronologicon v4.x
+# Chronologicon v5.x
 # Rutherford Craze
 # https://craze.co.uk
 # 181028
 
 import chronologicon, operator
+from chronologicon.terminalsize import get_terminal_size
 
 STATS_FILENAME = chronologicon.STATS_FILENAME
 STATS = {}
-BAR_WIDTH = 50
+TERM_WIDTH = get_terminal_size()[0]
+BAR_WIDTH = TERM_WIDTH - 4
 MVP_DISC = []
 
 # Console colour ANSI escapes
@@ -140,7 +142,7 @@ def GetPbt(verbose = False, uniform = False):
 
 def ViewStats(args):
 	global STATS
-	STATS = chronologicon.LoadStats()
+	STATS = chronologicon.input.LoadStats()
 	STATS = STATS[0]
 
 	if STATS == False:
@@ -161,8 +163,8 @@ def ViewStats(args):
 		uniform = False
 
 		if 'refresh' in args:
-			chronologicon.SaveStats()
-			STATS = chronologicon.LoadStats() # Reload
+			chronologicon.input.SaveStats()
+			STATS = chronologicon.input.LoadStats() # Reload
 			STATS = STATS[0]
 
 		if 'verbose' in args:
@@ -182,14 +184,14 @@ def ViewStats(args):
 	print(TotalTime)
 	print(AvgEntry)
 
-	print('\n  Work by Discipline\n')
+	print('\n  Work by Hour')
+	print(wbhGraph)
+	print('  | ' + 48 * '─')
+	print(wbhKey)
+
+	print('\n\n  Work by Discipline\n')
 	print(dbtGraph)
 	print(dbtKey)
-
-	print('\n\n  Work by Hour')
-	print(wbhGraph)
-	print('  | ' + (BAR_WIDTH - 2) * '─')
-	print(wbhKey)
 
 	print('\n\n  Largest Projects\n')
 	print(pbtList)

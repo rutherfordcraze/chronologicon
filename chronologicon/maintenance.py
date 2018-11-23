@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Chronologicon v4.x
+# Chronologicon v5.x
 # Rutherford Craze
 # https://craze.co.uk
 # 181103
 
 import chronologicon, time, os, json
 from datetime import datetime
-from  chronologicon.strings import *
+from chronologicon.strings import *
 
 PREFS = chronologicon.PREFS
 LOGS_FILENAME = chronologicon.LOGS_FILENAME
-LOGS = chronologicon.LoadLogs()
+LOGS = chronologicon.input.LoadLogs()
+
+TIME_FORMAT = '%y/%m/%d %H:%M:%S'
 
 SYN_DISC = ['discipline', 'disc', 'sector']
 SYN_PROJ = ['project', 'proj']
@@ -55,12 +57,12 @@ def List(verbose = False):
 		if len(line) < columnTabs[2]:
 			line += " " * (columnTabs[2] - len(line))
 
-		line += time.strftime("%y/%m/%d %H:%M", time.localtime(LOGS[logID]['TIME_START']/1000))
+		line += LOGS[logID]['TIME_START']
 
 		if len(line) < columnTabs[3]:
 			line += " " * (columnTabs[3] - len(line))
 
-		line += time.strftime("%y/%m/%d %H:%M", time.localtime(LOGS[logID]['TIME_END']/1000))
+		line += LOGS[logID]['TIME_END']
 
 		print("  " + line)
 	print(" ")
@@ -78,20 +80,34 @@ def Edit(logID = None, attribute = None, newValue = None):
 
 	elif attribute in SYN_TIME_START:
 		try:
-			dt = datetime.strptime(str(newValue), '%y/%m/%d %H:%M')
-			ms = int(time.mktime(dt.timetuple()) * 1000)
-			logToEdit['TIME_START'] = ms
-			logToEdit['TIME_LENGTH'] = int((logToEdit['TIME_END'] - ms) / 1000)
+			startDT = datetime.strptime(str(newValue), TIME_FORMAT)
+			startMS = int(time.mktime(startDT.timetuple()))
+
+			endDT = datetime.strptime(str(logToEdit['TIME_END']), TIME_FORMAT)
+			endMS = int(time.mktime(endDT.timetuple()))
+
+			duration = int((endMS - startMS))
+
+			logToEdit['TIME_START'] = newValue
+			logToEdit['TIME_LENGTH'] = duration
+
 			ApplyEdit(logID, logToEdit)
 		except Exception as e:
 			Message('maintStartEditFailed', e)
 
 	elif attribute in SYN_TIME_END:
 		try:
-			dt = datetime.strptime(str(newValue), '%y/%m/%d %H:%M')
-			ms = int(time.mktime(dt.timetuple()) * 1000)
-			logToEdit['TIME_END'] = ms
-			logToEdit['TIME_LENGTH'] = int((ms - logToEdit['TIME_START']) / 1000)
+			startDT = datetime.strptime(str(logToEdit['TIME_START']), TIME_FORMAT)
+			startMS = int(time.mktime(startDT.timetuple()))
+
+			endDT = datetime.strptime(str(newValue), TIME_FORMAT)
+			endMS = int(time.mktime(endDT.timetuple()))
+
+			duration = int((endMS - startMS))
+
+			logToEdit['TIME_END'] = newValue
+			logToEdit['TIME_LENGTH'] = duration
+			
 			ApplyEdit(logID, logToEdit)
 		except Exception as e:
 			Message('maintStartEditFailed', e)

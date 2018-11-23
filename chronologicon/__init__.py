@@ -22,68 +22,68 @@ PREFS = EasySettings(os.path.join(CUR_FILEPATH, 'prefs.conf'))
 
 # Logs version check
 try:
-	LOGS = ''
-	with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), "r") as LOGS_FILE:
-		LOGS = json.load(LOGS_FILE)
+    LOGS = ''
+    with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), "r") as LOGS_FILE:
+        LOGS = json.load(LOGS_FILE)
 
-	if type(LOGS[0]['TIME_START']) is int:
-		Message('initLogsOutdated')
-		input.MigrateLogs()
+    if type(LOGS[0]['TIME_START']) is int:
+        Message('initLogsOutdated')
+        input.MigrateLogs()
 except Exception as e:
-	Message('initVersionCheckFailed', e)
+    Message('initVersionCheckFailed', e)
 
 
 # Check any mission-critical files and create missing ones.
 def Preflights():
-	global PREFS
+    global PREFS
 
-	# Check save directory
-	if PREFS.has_option('SAVE_DIR'):
-		if os.path.isdir(PREFS.get('SAVE_DIR')):
-			None
-		else:
-			Message('initSaveDirNotVerified')
-			return False
-	else:
-		Message('initSaveDirNotSet')
-		return False
+    # Check save directory
+    if PREFS.has_option('SAVE_DIR'):
+        if os.path.isdir(PREFS.get('SAVE_DIR')):
+            None
+        else:
+            Message('initSaveDirNotVerified')
+            return False
+    else:
+        Message('initSaveDirNotSet')
+        return False
 
-	# Check logs file
-	if os.path.exists(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME)):
-		None
-	else:
-		Message('initCreatingLogsFile')
-		try:
-			# os.makedirs(os.path.dirname(LOGS_FILENAME), exist_ok=True)
-			with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), "w") as LOGS_FILE:
-				LOGS_FILE.write(json.dumps(LOGS_DEFAULT))
-		except Exception as e:
-			Message('initCreateLogFileFailed', e)
-			return False
+    # Check logs file
+    if os.path.exists(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME)):
+        None
+    else:
+        Message('initCreatingLogsFile')
+        try:
+            # os.makedirs(os.path.dirname(LOGS_FILENAME), exist_ok=True)
+            with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), "w") as LOGS_FILE:
+                LOGS_FILE.write(json.dumps(LOGS_DEFAULT))
+        except Exception as e:
+            Message('initCreateLogFileFailed', e)
+            return False
 
-	# Check stats file
-	if os.path.exists(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME)):
-		None
-	else:
-		Message('initCreatingStatsFile')
-		try:
-			# os.makedirs(os.path.dirname(LOGS_FILENAME), exist_ok=True)
-			with open(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME), "w") as STATS_FILE:
-				None
-		except Exception as e:
-			Message('initCreateStatsFileFailed', e)
-			return False
+    # Check stats file
+    if os.path.exists(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME)):
+        None
+    else:
+        Message('initCreatingStatsFile')
+        try:
+            # os.makedirs(os.path.dirname(LOGS_FILENAME), exist_ok=True)
+            with open(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME), "w") as STATS_FILE:
+                None
+        except Exception as e:
+            Message('initCreateStatsFileFailed', e)
+            return False
 
-	# Check temp file
-	if os.path.exists(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME)):
-		None
-	else:
-		Message('initCreatingTempFile')
-		try:
-			with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME), "w") as PRESAVE_FILE:
-				None
-		except Exception as e:
-			Message('initCreateTempFileFailed', e)
-			return False
+    # Check temp file
+    if os.path.exists(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME)):
+        None
+    else:
+        Message('initCreatingTempFile')
+        try:
+            with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME), "w") as PRESAVE_FILE:
+                None
+        except Exception as e:
+            Message('initCreateTempFileFailed', e)
+            return False
 
-	return True
+    return True

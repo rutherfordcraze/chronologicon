@@ -6,7 +6,7 @@ from chronologicon.strings import Message
 py3 = sys.version_info[0] > 2
 
 if not py3:
-	Message('chronOldPythonVersion','',str(sys.version_info[0]) + "." + str(sys.version_info[1]))
+    Message('chronOldPythonVersion','',str(sys.version_info[0]) + "." + str(sys.version_info[1]))
 
 # Logging and entry
 START_COMMANDS = ['start', 'begin', 's', '-s']
@@ -29,75 +29,75 @@ HELP_COMMANDS = ['help', 'h', '--help', '-h']
 # --------------------------------------------------
 
 if len(sys.argv) > 1:
-	mainCommand = sys.argv[1] #sys.argv[0] is the name of the script
-	options = sys.argv[2:]
-	preflightsPassed = True
+    mainCommand = sys.argv[1] #sys.argv[0] is the name of the script
+    options = sys.argv[2:]
+    preflightsPassed = True
 
-	if mainCommand in DIRECTORY_COMMANDS:
-		# Change directory to the one provided, or if none is provided, ask for one
-		if len(options) > 0:
-			chronologicon.input.ChangeSaveDir(options[0])
-		else:
-			if py3:
-				response = input("New save directory: ")
-			else:
-				response = raw_input("New save directory: ")
+    if mainCommand in DIRECTORY_COMMANDS:
+        # Change directory to the one provided, or if none is provided, ask for one
+        if len(options) > 0:
+            chronologicon.input.ChangeSaveDir(options[0])
+        else:
+            if py3:
+                response = input("New save directory: ")
+            else:
+                response = raw_input("New save directory: ")
 
-			chronologicon.input.ChangeSaveDir(response)
+            chronologicon.input.ChangeSaveDir(response)
 
-		preflightsPassed = chronologicon.Preflights()
-		exit()
-	else:
-		if chronologicon.Preflights() is False:
-			exit()
+        preflightsPassed = chronologicon.Preflights()
+        exit()
+    else:
+        if chronologicon.Preflights() is False:
+            exit()
 
-	# Logging and entry
-	if mainCommand in START_COMMANDS:
-		chronologicon.input.StartLog(options)
+    # Logging and entry
+    if mainCommand in START_COMMANDS:
+        chronologicon.input.StartLog(options)
 
-	elif mainCommand in STOP_COMMANDS:
-		chronologicon.input.StopLog()
+    elif mainCommand in STOP_COMMANDS:
+        chronologicon.input.StopLog()
 
-	elif mainCommand in ABORT_COMMANDS:
-		if py3:
-			response = input("Cancel the log in progress? (y/n): ")
-		else:
-			response = raw_input("Cancel the log in progress? (y/n): ")
+    elif mainCommand in ABORT_COMMANDS:
+        if py3:
+            response = input("Cancel the log in progress? (y/n): ")
+        else:
+            response = raw_input("Cancel the log in progress? (y/n): ")
 
-		if response == 'y':
-			chronologicon.input.CancelLog()
-		else:
-			Message('chronLogAbortCancelled')
+        if response == 'y':
+            chronologicon.input.CancelLog()
+        else:
+            Message('chronLogAbortCancelled')
 
-	elif mainCommand in STATUS_COMMANDS:
-		chronologicon.input.Status()
+    elif mainCommand in STATUS_COMMANDS:
+        chronologicon.input.Status()
 
-	# Stats and graphs
-	elif mainCommand in STATS_COMMANDS:
-		chronologicon.output.ViewStats(options)
+    # Stats and graphs
+    elif mainCommand in STATS_COMMANDS:
+        chronologicon.output.ViewStats(options)
 
-	# Maintenance
-	elif mainCommand in BACKUP_COMMANDS:
-		chronologicon.input.Backup()
+    # Maintenance
+    elif mainCommand in BACKUP_COMMANDS:
+        chronologicon.input.Backup()
 
-	elif mainCommand in LIST_COMMANDS:
-		if 'verbose' in options:
-			chronologicon.maintenance.List(True)
-		else:
-			chronologicon.maintenance.List()
+    elif mainCommand in LIST_COMMANDS:
+        if 'verbose' in options:
+            chronologicon.maintenance.List(True)
+        else:
+            chronologicon.maintenance.List()
 
-	elif mainCommand in EDIT_COMMANDS:
-		if len(options) > 2:
-			chronologicon.maintenance.Edit(options[0], options[1], options[2])
-		else:
-			Message('chronMaintenanceInputInvalid')
+    elif mainCommand in EDIT_COMMANDS:
+        if len(options) > 2:
+            chronologicon.maintenance.Edit(options[0], options[1], options[2])
+        else:
+            Message('chronMaintenanceInputInvalid')
 
-	# Help
-	elif mainCommand in HELP_COMMANDS:
-		Message('chronHelp')
+    # Help
+    elif mainCommand in HELP_COMMANDS:
+        Message('chronHelp')
 
-	else:
-		Message('chronUnrecognisedCommand')
+    else:
+        Message('chronUnrecognisedCommand')
 
 else:
-	Message('chronNotEnoughArguments')
+    Message('chronNotEnoughArguments')

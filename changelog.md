@@ -1,3 +1,12 @@
+## 5.2
+
+— Added remove feature for previous logs.
+
+— Reformatted and tidied up a bunch of code.
+
+— Running chron with no arguments now displays status, not help.
+
+
 ## 5.1
 
 — Backups are automatically placed in a 'Backups' folder.

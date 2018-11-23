@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import chronologicon, chronologicon.input, chronologicon.output, chronologicon.maintenance, sys
+# Standard lib
+import sys
+
+# Chronologicon
+import chronologicon, chronologicon.input, chronologicon.output, chronologicon.maintenance
 from chronologicon.strings import Message
+
 py3 = sys.version_info[0] > 2
 
 if not py3:
@@ -100,4 +105,4 @@ if len(sys.argv) > 1:
         Message('chronUnrecognisedCommand')
 
 else:
-    Message('chronNotEnoughArguments')
+    chronologicon.input.Status()

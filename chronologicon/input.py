@@ -21,22 +21,22 @@ LOGS_DEFAULT = []
 
 CUR_FILEPATH = os.path.dirname(__file__)
 CUR_LOG = {
-    'TIME_START':'',
-    'TIME_END':'',
-    'TIME_LENGTH':0,
+    'TIME_START': '',
+    'TIME_END': '',
+    'TIME_LENGTH': 0,
 
-    'DISC':"",
-    'PROJ':"",
-    'XNOTE':""
+    'DISC': "",
+    'PROJ': "",
+    'XNOTE': ""
     }
 CUR_STATS = {
-    'discbytime':{},
-    'projbytime':{},
-    'projbydisc':{},
-    'workbyhour':{},
-    'avgloglength':0,
-    'totallogs':0,
-    'totaltime':0
+    'discbytime': {},
+    'projbytime': {},
+    'projbydisc': {},
+    'workbyhour': {},
+    'avgloglength': 0,
+    'totallogs': 0,
+    'totaltime': 0
     }
 
 PREFS = EasySettings(os.path.join(CUR_FILEPATH, 'prefs.conf'))
@@ -99,12 +99,12 @@ def Status():
 def CancelLog(quietly=False):
     try:
         with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME), 'w') as PRESAVE_FILE:
-            PRESAVE_FILE.write("")
+            PRESAVE_FILE.write('')
     except Exception as e:
         Message('inputLogAbortFailed', e)
         return
 
-    if quietly is not True:
+    if not quietly:
         Message('inputLogAborted')
 
 # Create/ overwrite stats file with info from all logs
@@ -161,7 +161,7 @@ def StartLog(args):
     else:
         try:
             # Abort if there's already a log running
-            if(os.path.getsize(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME)) > 10):
+            if os.path.getsize(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME)) > 10:
                 Message('inputLogAlreadyInProgress')
                 return
         except:
@@ -189,7 +189,7 @@ def StopLog():
     try:
         with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME)) as PRESAVE_FILE:
             CUR_LOG = json.load(PRESAVE_FILE)
-    except:
+    except Exception as e:
         Message('inputNoCurrentLog')
         return
 

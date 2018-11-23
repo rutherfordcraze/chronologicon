@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Chronologicon v5.x
@@ -6,7 +5,9 @@
 # https://craze.co.uk
 # 181028
 
-import json, os, chronologicon.input
+import json
+import os
+import chronologicon.input
 from easysettings import EasySettings
 from chronologicon.strings import *
 
@@ -40,7 +41,7 @@ def Preflights():
     # Check save directory
     if PREFS.has_option('SAVE_DIR'):
         if os.path.isdir(PREFS.get('SAVE_DIR')):
-            None
+            pass
         else:
             Message('initSaveDirNotVerified')
             return False
@@ -50,7 +51,7 @@ def Preflights():
 
     # Check logs file
     if os.path.exists(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME)):
-        None
+        pass
     else:
         Message('initCreatingLogsFile')
         try:
@@ -63,25 +64,25 @@ def Preflights():
 
     # Check stats file
     if os.path.exists(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME)):
-        None
+        pass
     else:
         Message('initCreatingStatsFile')
         try:
             # os.makedirs(os.path.dirname(LOGS_FILENAME), exist_ok=True)
             with open(os.path.join(PREFS.get('SAVE_DIR'), STATS_FILENAME), "w") as STATS_FILE:
-                None
+                pass
         except Exception as e:
             Message('initCreateStatsFileFailed', e)
             return False
 
     # Check temp file
     if os.path.exists(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME)):
-        None
+        pass
     else:
         Message('initCreatingTempFile')
         try:
             with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME), "w") as PRESAVE_FILE:
-                None
+                pass
         except Exception as e:
             Message('initCreateTempFileFailed', e)
             return False

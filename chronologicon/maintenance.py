@@ -6,9 +6,13 @@
 # https://craze.co.uk
 # 181103
 
-import chronologicon, time, os, json
+import os
+import time
+import json
 from datetime import datetime
-from chronologicon.strings import *
+
+import chronologicon
+from chronologicon.strings import Message
 
 PREFS = chronologicon.PREFS
 LOGS_FILENAME = chronologicon.LOGS_FILENAME
@@ -22,23 +26,24 @@ SYN_PROJ = ['project', 'proj']
 SYN_TIME_START = ['start', 'start_time', 'time_start']
 SYN_TIME_END = ['end', 'end_time', 'time_end']
 
-def List(verbose = False):
+def List(verbose=False):
     qty = 10
     columnTabs = [6, 20, 40, 60]
 
-    if LOGS == False:
+    if not LOGS:
         Message('maintLogsFileNotFound','',LOGS_FILENAME)
         return
 
     totalLogs = len(LOGS)
 
-    if totalLogs < qty or verbose:
+    if verbose or totalLogs < qty:
         Message('maintAllLogsTitle')
         qty = totalLogs
     else:
         Message('maintRecentLogsTitle', '', qty)
 
-    print(u"\u001b[37m  ID    Discipline    Project             Start               End\u001b[0m") # This is a catastrophically bad way of doing it
+    # This is a catastrophically bad way of doing it
+    print(u"\u001b[37m  ID    Discipline    Project             Start               End\u001b[0m")
 
     for i in range(qty):
         logID = totalLogs - 1 - i
@@ -67,7 +72,7 @@ def List(verbose = False):
         print("  " + line)
     print(" ")
 
-def Edit(logID = None, attribute = None, newValue = None):
+def Edit(logID=None, attribute=None, newValue=None):
     logToEdit = LOGS[int(logID)]
 
     if attribute in SYN_DISC:

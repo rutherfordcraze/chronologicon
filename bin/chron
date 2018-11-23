@@ -5,13 +5,16 @@
 import sys
 
 # Chronologicon
-import chronologicon, chronologicon.input, chronologicon.output, chronologicon.maintenance
+import chronologicon
+import chronologicon.input
+import chronologicon.output
+import chronologicon.maintenance
 from chronologicon.strings import Message
 
 py3 = sys.version_info[0] > 2
 
 if not py3:
-    Message('chronOldPythonVersion','',str(sys.version_info[0]) + "." + str(sys.version_info[1]))
+    Message('chronOldPythonVersion', '', str(sys.version_info[0]) + "." + str(sys.version_info[1]))
 
 # Logging and entry
 START_COMMANDS = ['start', 'begin', 's', '-s']

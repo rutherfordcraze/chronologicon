@@ -6,7 +6,8 @@
 # https://craze.co.uk
 # 181028
 
-import chronologicon, operator
+import operator
+import chronologicon
 from chronologicon.terminalsize import get_terminal_size
 
 STATS_FILENAME = chronologicon.STATS_FILENAME

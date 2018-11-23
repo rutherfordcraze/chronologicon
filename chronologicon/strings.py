@@ -74,10 +74,10 @@ STRINGS = {
     'initLogsOutdated':                 'Logs file was saved using an old version. Backing up and migrating to the latest version...'
 }
 
-def Message(msg, e = '', extra = ''):
+def Message(msg, e=None, extra=None):
     msg = STRINGS[msg]
-    if extra != '':
+    if extra:
         msg = msg.replace('#x', str(extra))
     print(msg)
-    if e != '':
+    if e:
         print(str(e))

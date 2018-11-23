@@ -28,7 +28,8 @@ For detailed usage:
 STRINGS = {
     'chronHelp':                        HELP_TEXT,
     'chronLogAbortCancelled':           'Log not cancelled.',
-    'chronMaintenanceInputInvalid':     'Unexpected input. Usage:\n$ chron edit <logID> <attribute> <newValue>',
+    'chronEditInputInvalid':            'Unexpected input. Usage:\n$ chron edit <logID> <attribute> <newValue>',
+    'chronRemoveInputInvalid':          'Unexpected input. Usage:\n$ chron remove <logID>',
     'chronUnrecognisedCommand':         'Command not recognised.',
     'chronNotEnoughArguments':          'Not enough arguments.\n' + HELP_TEXT,
     'chronOldPythonVersion':            'You are running Chronologicon on python #x. This version will not be supported in future.',

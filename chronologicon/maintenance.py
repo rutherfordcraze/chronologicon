@@ -117,7 +117,13 @@ def Edit(logID = None, attribute = None, newValue = None):
 
 def ApplyEdit(logID, newValue):
     LOGS[int(logID)] = newValue
+    PersistLogs()
 
+def Remove(logID = None):
+    del LOGS[int(logID)]
+    PersistLogs()
+
+def PersistLogs():
     try:
         # Write logs to logs file
         with open(os.path.join(PREFS.get('SAVE_DIR'), LOGS_FILENAME), 'w') as LOGS_FILE:

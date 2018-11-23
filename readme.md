@@ -87,7 +87,7 @@ directory   d, -d
 
 ## Editing
 
-> __Warning!__  
+> __Warning!__
 > Edition and removal of previous logs is a new and largely untested feature.  
 > Make sure your logs file is backed up.
 
@@ -98,5 +98,5 @@ directory   d, -d
 - `$ chron edit <logID> <attribute> <newValue>`
 - Example: `$ chron edit 204 discipline 'music'`
 - __Removing entries__:
-- `$ chron remove <logID>`  
+- `$ chron remove <logID>`
 - Example: `$ chron remove 42`

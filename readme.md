@@ -100,3 +100,10 @@ directory   d, -d
 - __Removing entries__:
 - `$ chron remove <logID>`
 - Example: `$ chron remove 42`
+
+
+## Contributors
+
+[Carlos Aguilar](https://github.com/Neko250) made a huge number of cleanup and refactoring changes, along with adding the `remove` feature. He is not credited as a contributor on github because I messed up the pull request.
+
+Chronologicon is inspired and influenced by time trackers created by [Devine Lu Linvega](https://wiki.xxiivv.com/#tracker), [Josh Avanier](https://joshavanier.github.io/#log), [Vi](https://log.v-os.ca/Home) and [Autophagy](https://github.com/autophagy/faereld). Thank you for making such wonderful things.

@@ -104,6 +104,10 @@ directory   d, -d
 
 ## Contributors
 
-[Carlos Aguilar](https://github.com/Neko250) made a huge number of cleanup and refactoring changes, along with adding the `remove` feature. He is not credited as a contributor on github because I messed up the pull request.
+[Carlos Aguilar](https://github.com/Neko250) made a huge number of cleanup and refactoring changes, along with adding the `remove` feature.
+
+[Luke Charsley](https://github.com/lukecharsley) and [Ricard Garcia](https://github.com/Ricard-Garcia) have both been extremely valuable in finding bugs and providing their feedback.
+
+Other direct contributors are listed on the repository.
 
 Chronologicon is inspired and influenced by time trackers created by [Devine Lu Linvega](https://wiki.xxiivv.com/#tracker), [Josh Avanier](https://joshavanier.github.io/#log), [Vi](https://log.v-os.ca/Home) and [Autophagy](https://github.com/autophagy/faereld). Thank you for making such wonderful things.

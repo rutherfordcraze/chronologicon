@@ -47,6 +47,7 @@ STRINGS = {
     'inputBackupFailed':                'Unable to back up logs.',
     'inputNoCurrentLog':                'No log in progress.',
     'inputLogInProgress':               'Log in progress: #x.',
+    'inputTimeElapsed':                 'Current duration: #x seconds.',
     'inputLogAborted':                  'Log cancelled.',
     'inputLogAbortFailed':              'Unable to cancel the current log.',
     'inputStatsUpdateFailed':           'Unable to update stats file.',

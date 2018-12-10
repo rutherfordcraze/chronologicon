@@ -1,3 +1,8 @@
+## 5.3
+
+— Added current elapsed time message to status.
+
+
 ## 5.2
 
 — Added remove feature for previous logs.

@@ -1,3 +1,7 @@
+## 5.5
+
+— Incremented version number
+
 ## 5.4
 
 — Minor style changes to statistics overview.

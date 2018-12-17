@@ -1,8 +1,13 @@
 from setuptools import setup
 
+with open('readme.md') as f:
+    long_description = f.read()
+
 setup(name='chronologicon',
-      version='5.4',
+      version='5.5',
       description='A minimal time tracker',
+      long_description=long_description,
+      long_description_content_type='text/markdown',
       url='https://github.com/rutherfordcraze/chronologicon',
       author='Rutherford Craze',
       author_email='rutherford@craze.co.uk',

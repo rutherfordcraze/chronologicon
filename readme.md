@@ -9,7 +9,7 @@ Install:
 &nbsp;
 
 
-![Example screenshot](screenshot.png)
+![Example screenshot](screenshot.jpg)
 
 
 ## Logs

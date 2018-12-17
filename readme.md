@@ -1,5 +1,5 @@
 # Chronologicon
-v5.3 — 181210
+v5.4 — 181217
 
 A minimal time tracker, now rewritten for the command line. Chronologicon records your work sessions and displays graphs based on your projects.
 

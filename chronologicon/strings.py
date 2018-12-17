@@ -71,7 +71,10 @@ STRINGS = {
     'initCreateStatsFileFailed':        'Unable to create stats file. Please check your install.',
     'initCreateTempFileFailed':         'Unable to create temporary save file. Please check your install.',
     'initVersionCheckFailed':           'Unable to check logs file version.',
-    'initLogsOutdated':                 'Logs file was saved using an old version. Backing up and migrating to the latest version...'
+    'initLogsOutdated':                 'Logs file was saved using an old version. Backing up and migrating to the latest version...',
+
+    'outputLoadStatsFailed':            'Unable to load file: #x. Please ensure it exists.',
+    'outputLoadLogsFailed':            'Unable to load file: #x. Please ensure it exists.'
 }
 
 def Message(msg, e=None, extra=None):

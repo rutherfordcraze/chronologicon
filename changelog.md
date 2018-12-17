@@ -1,3 +1,14 @@
+## 5.4
+
+— Minor style changes to statistics overview.
+
+— Added a graph of recent log history, with bars coloured by most prominent discipline.
+
+— Migrated some error messages from output.py to strings.py.
+
+— Fixed the misalignment of hour labels in the project duration overview.
+
+
 ## 5.3
 
 — Added current elapsed time message to status.

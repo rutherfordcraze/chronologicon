@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='chronologicon',
-      version='5.3',
+      version='5.4',
       description='A minimal time tracker',
       url='https://github.com/rutherfordcraze/chronologicon',
       author='Rutherford Craze',

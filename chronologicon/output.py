@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 
 # Chronologicon v5.x
 # Rutherford Craze
@@ -6,11 +6,15 @@
 # 181028
 
 import operator
+import datetime
 import chronologicon
 from chronologicon.terminalsize import get_terminal_size
+from chronologicon.strings import Message
 
 STATS_FILENAME = chronologicon.STATS_FILENAME
 STATS = {}
+LOGS_FILENAME = chronologicon.LOGS_FILENAME
+LOGS = {}
 TERM_WIDTH = get_terminal_size()[0]
 BAR_WIDTH = TERM_WIDTH - 4
 MVP_DISC = []
@@ -26,6 +30,7 @@ class colors:
 class bars:
     SINGLE = u"\u2588"
     DOUBLE = u"\u2590\u258C"
+    SHORTDOUBLE = u"\u2597\u2596"
 
 def GetDbt(byProject = None, graphWidth = BAR_WIDTH):
     global MVP_DISC
@@ -94,7 +99,7 @@ def GetWbh():
             if wbhClamped[col] >= height - row:
                 wbhGraph += bars.DOUBLE
             else:
-                wbhGraph += "  "
+                wbhGraph += colors.GREY + "··" + colors.RESET
 
     for col in range(0, len(wbhClamped), 3):
         wbhKey += str(col).zfill(2) + '    '
@@ -135,27 +140,98 @@ def GetPbt(verbose = False, uniform = False):
             dbtGraph, dbtKey = GetDbt(k, pBarWidth)
 
             pbtList += dbtGraph + "\n"
-            pbtList += "  " + str(k).capitalize() + (spacer * ' ') + str(int(v / 60 / 60)) + " h\n\n"
+            label =  str(int(v / 60 / 60)) + colors.GREY + " H" + colors.RESET
+            labelString = "  " + str(k).capitalize()
+
+            # Add 11 to compensate for left padding and the ansi colour code
+            labelString += " " * (BAR_WIDTH - len(labelString) - len(label) + 11)
+            labelString += label
+            pbtList += labelString + "\n\n"
 
     return pbtList
+
+# Kinda inefficient, but I'm planning on refactoring the way stats work soon anyway.
+def GetRecents():
+    recentDays = BAR_WIDTH // 2 - 1
+    height = 6
+    now = datetime.datetime.now() # Prevent alignment issues due to processing time crossing a log 'anniversary'
+    times = []
+    disciplines = []
+
+    for i in range(recentDays):
+        day = datetime.date.strftime(now - datetime.timedelta(days=i), '%y/%m/%d')
+        timeThisDay = 0
+        disciplinesThisDay = {}
+
+        for log in LOGS:
+            if log['TIME_START'][0:8] == day:
+                timeThisDay += log['TIME_LENGTH']
+                disciplinesThisDay.update({log['DISC']: log['TIME_LENGTH']})
+
+        dbt = sorted(disciplinesThisDay.items(), key=operator.itemgetter(1))
+        keyDiscipline = ""
+        if dbt:
+            maxValue = max(disciplinesThisDay.items(), key=operator.itemgetter(1))[1]
+            dbt.reverse()
+            keyDiscipline = dbt[0][0]
+        times.append(timeThisDay)
+        disciplines.append(keyDiscipline)
+
+    maxValue = max(times)
+    times.reverse()
+    recentsGraph = ""
+    for row in range(height):
+        if row > 0:
+            recentsGraph += "\n  | "
+        else:
+            recentsGraph += "  | "
+        for col in range(len(times)):
+            if times[col] / maxValue * height >= height - row:
+                if disciplines[col] in MVP_DISC:
+                    if disciplines[col] == MVP_DISC[0]:
+                        recentsGraph += bars.DOUBLE
+                    elif disciplines[col] == MVP_DISC[1]:
+                        recentsGraph += colors.RED + bars.DOUBLE + colors.RESET
+                    elif disciplines[col] == MVP_DISC[2]:
+                        recentsGraph += colors.BLUE + bars.DOUBLE + colors.RESET
+                else:
+                    recentsGraph += colors.GREY + bars.DOUBLE + colors.RESET
+            else:
+                if times[col] > 0 and row == height - 1:
+                    recentsGraph += colors.GREY + bars.SHORTDOUBLE + colors.RESET
+                else:
+                    recentsGraph += colors.GREY + "··" + colors.RESET
+
+    recentsKey = "  | " + str(recentDays) + " days ago"
+    recentsKey += " " * (BAR_WIDTH - len(recentsKey) - 3)
+    recentsKey += "Today"
+
+    return(recentsGraph, recentsKey)
 
 
 def ViewStats(args):
     global STATS
+    global LOGS
     STATS = chronologicon.input.LoadStats()[0]
+    LOGS = chronologicon.input.LoadLogs()
 
     if STATS == False:
-        print("Unable to load file: " + STATS_FILENAME + ". Please ensure it exists.")
+        Message('outputLoadStatsFailed', '', STATS_FILENAME)
+        return
+
+    if LOGS == False:
+        Message('outputLoadLogsFailed', '', LOGS_FILENAME)
         return
 
     # Overview numbers
-    TotalEntries = "  Total Entries:    " + str(STATS['totallogs'])
-    TotalTime =    "  Total Time:       " + str(int(STATS['totaltime']/60/60)) + " h"
-    AvgEntry =     "  Average Log:      " + str(STATS['avgloglength']//60) + " m\n"
+    TotalEntries = "  Total Entries:       " + str(STATS['totallogs'])
+    TotalTime =    "  Total Time:          " + str(int(STATS['totaltime']/60/60)) + colors.GREY + " Hours" + colors.RESET
+    AvgEntry =     "  Average Duration:    " + str(STATS['avgloglength']//60) + colors.GREY + " Minutes\n" + colors.RESET
 
     # Graphs
     dbtGraph, dbtKey = GetDbt()
     wbhGraph, wbhKey = GetWbh()
+    recentsGraph, recentsKey = GetRecents()
 
     if len(args) > 0:
         verbose = False
@@ -183,10 +259,15 @@ def ViewStats(args):
     print(TotalTime)
     print(AvgEntry)
 
-    print('\n  Work by Hour')
+    print('\n  Work by Hour\n')
     print(wbhGraph)
     print('  | ' + 48 * '─')
     print(wbhKey)
+
+    print('\n\n  Recent History\n')
+    print(recentsGraph)
+    print('  | ' + (BAR_WIDTH - 2) * '─')
+    print(recentsKey)
 
     print('\n\n  Work by Discipline\n')
     print(dbtGraph)

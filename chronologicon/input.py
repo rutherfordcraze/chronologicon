@@ -8,7 +8,7 @@
 import json, os, time
 from datetime import datetime
 from easysettings import EasySettings
-from  chronologicon.strings import *
+from chronologicon.strings import *
 
 LOGS_FILENAME = 'logs.json'
 STATS_FILENAME = 'stat.json'

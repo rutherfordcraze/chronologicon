@@ -111,3 +111,5 @@ directory   d, -d
 Other direct contributors are listed on the repository.
 
 Chronologicon is inspired and influenced by time trackers created by [Devine Lu Linvega](https://wiki.xxiivv.com/#tracker), [Josh Avanier](https://joshavanier.github.io/#log), [Vi](https://log.v-os.ca/Home) and [Autophagy](https://github.com/autophagy/faereld). Thank you for making such wonderful things.
+
+Devine also maintains a list of [self-authored time tracking tools](https://github.com/merveilles/Time-Travelers) and their creators, in the form of a github repository.

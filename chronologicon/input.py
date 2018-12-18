@@ -90,11 +90,13 @@ def Status():
     try:
         with open(os.path.join(CUR_FILEPATH, PRESAVE_FILENAME)) as PRESAVE_FILE:
             CUR_LOG = json.load(PRESAVE_FILE)
-            Message('inputLogInProgress', '', CUR_LOG['DISC'] + ', ' + CUR_LOG['PROJ'])
+            Message('inputLogInProgress', '', CUR_LOG['DISC'].title() + ', ' + CUR_LOG['PROJ'].title())
 
             delta = datetime.now() - datetime.strptime(CUR_LOG['TIME_START'], TIME_FORMAT)
             seconds = str(delta.seconds)
-            Message('inputTimeElapsed', '', seconds)
+            hours = int(seconds) / 60 / 60
+            humanreadable = seconds + ' seconds (' + str(round(hours, 2)) + ' H)'
+            Message('inputTimeElapsed', '', humanreadable)
     except:
         Message('inputNoCurrentLog')
 

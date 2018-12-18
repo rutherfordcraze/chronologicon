@@ -46,8 +46,8 @@ STRINGS = {
     'inputBackupComplete':              'Logs file backed up.',
     'inputBackupFailed':                'Unable to back up logs.',
     'inputNoCurrentLog':                'No log in progress.',
-    'inputLogInProgress':               'Log in progress: #x.',
-    'inputTimeElapsed':                 'Current duration: #x seconds.',
+    'inputLogInProgress':               'Log in progress:  #x.',
+    'inputTimeElapsed':                 'Current duration: #x.',
     'inputLogAborted':                  'Log cancelled.',
     'inputLogAbortFailed':              'Unable to cancel the current log.',
     'inputStatsUpdateFailed':           'Unable to update stats file.',
@@ -74,7 +74,7 @@ STRINGS = {
     'initLogsOutdated':                 'Logs file was saved using an old version. Backing up and migrating to the latest version...',
 
     'outputLoadStatsFailed':            'Unable to load file: #x. Please ensure it exists.',
-    'outputLoadLogsFailed':            'Unable to load file: #x. Please ensure it exists.'
+    'outputLoadLogsFailed':             'Unable to load file: #x. Please ensure it exists.'
 }
 
 def Message(msg, e=None, extra=None):

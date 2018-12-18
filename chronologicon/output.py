@@ -198,7 +198,15 @@ def GetRecents():
                     recentsGraph += colors.GREY + bars.DOUBLE + colors.RESET
             else:
                 if times[col] > 0 and row == height - 1:
-                    recentsGraph += colors.GREY + bars.SHORTDOUBLE + colors.RESET
+                    if disciplines[col] in MVP_DISC:
+                        if disciplines[col] == MVP_DISC[0]:
+                            recentsGraph += bars.SHORTDOUBLE
+                        elif disciplines[col] == MVP_DISC[1]:
+                            recentsGraph += colors.RED + bars.SHORTDOUBLE + colors.RESET
+                        elif disciplines[col] == MVP_DISC[2]:
+                            recentsGraph += colors.BLUE + bars.SHORTDOUBLE + colors.RESET
+                    else:
+                        recentsGraph += colors.GREY + bars.SHORTDOUBLE + colors.RESET
                 else:
                     recentsGraph += colors.GREY + "··" + colors.RESET
 

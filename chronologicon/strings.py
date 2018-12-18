@@ -46,7 +46,7 @@ STRINGS = {
     'inputBackupComplete':              'Logs file backed up.',
     'inputBackupFailed':                'Unable to back up logs.',
     'inputNoCurrentLog':                'No log in progress.',
-    'inputLogInProgress':               'Log in progress:  #x.',
+    'inputLogInProgress':               'Log in progress: #x.',
     'inputTimeElapsed':                 'Current duration: #x.',
     'inputLogAborted':                  'Log cancelled.',
     'inputLogAbortFailed':              'Unable to cancel the current log.',

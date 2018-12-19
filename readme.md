@@ -1,15 +1,25 @@
 # Chronologicon
-v5.5 — 181217
+v5.6 — 181219
 
 A minimal time tracker, now rewritten for the command line. Chronologicon records your work sessions and displays graphs based on your projects.
 
-Install:
-`$ pip install chronologicon`
-
 &nbsp;
 
-
 ![Example screenshot](screenshot.jpg)
+
+## Install
+
+### From the Repo:
+```
+git clone https://github.com/rutherfordcraze/chronologicon
+cd chronologicon
+pip install --user -e .
+```
+
+### Via pip:
+```
+pip install chronologicon
+```
 
 
 ## Logs

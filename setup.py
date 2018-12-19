@@ -4,7 +4,7 @@ with open('readme.md') as f:
     long_description = f.read()
 
 setup(name='chronologicon',
-      version='5.5',
+      version='5.6',
       description='A minimal time tracker',
       long_description=long_description,
       long_description_content_type='text/markdown',

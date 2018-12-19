@@ -1,6 +1,20 @@
+## 5.6
+
+— Fixed issue where recent history graph would have no colours when tracked disciplines contained uppercase letters.
+
+— Tiny performance optimisation in history graph.
+
+— Added current log duration in hours to status output.
+
+— Changed install instructions in readme.
+
+— Fixed an issue with interpuncts in the output window causing python2 to crash.
+
+
 ## 5.5
 
-— Incremented version number
+— Incremented version number.
+
 
 ## 5.4
 

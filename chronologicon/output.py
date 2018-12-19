@@ -31,6 +31,7 @@ class bars:
     SINGLE = u"\u2588"
     DOUBLE = u"\u2590\u258C"
     SHORTDOUBLE = u"\u2597\u2596"
+    DOTDOUBLE = u"\u00B7\u00B7"
 
 def GetDbt(byProject = None, graphWidth = BAR_WIDTH):
     global MVP_DISC
@@ -99,7 +100,7 @@ def GetWbh():
             if wbhClamped[col] >= height - row:
                 wbhGraph += bars.DOUBLE
             else:
-                wbhGraph += colors.GREY + "··" + colors.RESET
+                wbhGraph += colors.GREY + bars.DOTDOUBLE + colors.RESET
 
     for col in range(0, len(wbhClamped), 3):
         wbhKey += str(col).zfill(2) + '    '
@@ -187,28 +188,30 @@ def GetRecents():
             recentsGraph += "  | "
         for col in range(len(times)):
             if times[col] / maxValue * height >= height - row:
-                if disciplines[col] in MVP_DISC:
-                    if disciplines[col] == MVP_DISC[0]:
+                disciplineKey = disciplines[col].lower()
+                if disciplineKey in MVP_DISC:
+                    if disciplineKey == MVP_DISC[0]:
                         recentsGraph += bars.DOUBLE
-                    elif disciplines[col] == MVP_DISC[1]:
+                    elif disciplineKey == MVP_DISC[1]:
                         recentsGraph += colors.RED + bars.DOUBLE + colors.RESET
-                    elif disciplines[col] == MVP_DISC[2]:
+                    elif disciplineKey == MVP_DISC[2]:
                         recentsGraph += colors.BLUE + bars.DOUBLE + colors.RESET
                 else:
                     recentsGraph += colors.GREY + bars.DOUBLE + colors.RESET
             else:
                 if times[col] > 0 and row == height - 1:
-                    if disciplines[col] in MVP_DISC:
-                        if disciplines[col] == MVP_DISC[0]:
+                    disciplineKey = disciplines[col].lower()
+                    if disciplineKey in MVP_DISC:
+                        if disciplineKey == MVP_DISC[0]:
                             recentsGraph += bars.SHORTDOUBLE
-                        elif disciplines[col] == MVP_DISC[1]:
+                        elif disciplineKey == MVP_DISC[1]:
                             recentsGraph += colors.RED + bars.SHORTDOUBLE + colors.RESET
-                        elif disciplines[col] == MVP_DISC[2]:
+                        elif disciplineKey == MVP_DISC[2]:
                             recentsGraph += colors.BLUE + bars.SHORTDOUBLE + colors.RESET
                     else:
                         recentsGraph += colors.GREY + bars.SHORTDOUBLE + colors.RESET
                 else:
-                    recentsGraph += colors.GREY + "··" + colors.RESET
+                    recentsGraph += colors.GREY + bars.DOTDOUBLE + colors.RESET
 
     recentsKey = "  | " + str(recentDays) + " days ago"
     recentsKey += " " * (BAR_WIDTH - len(recentsKey) - 3)

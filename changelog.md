@@ -1,3 +1,10 @@
+## 5.7
+
+— Fixed issue with recent history graph colours not being accurate.
+
+— Added disclaimer to readme & license to repo.
+
+
 ## 5.6
 
 — Fixed issue where recent history graph would have no colours when tracked disciplines contained uppercase letters.

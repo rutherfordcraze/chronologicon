@@ -172,7 +172,7 @@ def GetRecents():
         dbt = sorted(disciplinesThisDay.items(), key=operator.itemgetter(1))
         keyDiscipline = ""
         if dbt:
-            maxValue = max(disciplinesThisDay.items(), key=operator.itemgetter(1))[1]
+            maxValue = max(disciplinesThisDay.items(), key=operator.itemgetter(1))[0]
             dbt.reverse()
             keyDiscipline = dbt[0][0]
         times.append(timeThisDay)
@@ -180,6 +180,7 @@ def GetRecents():
 
     maxValue = max(times)
     times.reverse()
+    disciplines.reverse()
     recentsGraph = ""
     for row in range(height):
         if row > 0:

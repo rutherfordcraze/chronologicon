@@ -1,11 +1,14 @@
 # Chronologicon
-v5.6 — 181219
+v5.7 — 190130
 
 A minimal time tracker, now rewritten for the command line. Chronologicon records your work sessions and displays graphs based on your projects.
 
 &nbsp;
 
 ![Example screenshot](screenshot.jpg)
+
+> __Note:__
+> This software is built specifically as a productivity tool for myself, not as a consumer resource. While I do my best to resolve issues and implement new features, I cannot commit a large amount of time to maintaining the software.
 
 ## Install
 
